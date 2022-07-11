@@ -1,5 +1,8 @@
 name: 'Go Test Action'
 description: 'Run `go test` with rich summary output and annotations.'
+branding:
+  icon: 'check-circle'
+  color: 'green'
 inputs:
   moduleDirectory:
     description: 'Directory of go module to test'
