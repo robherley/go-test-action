@@ -1,0 +1,59 @@
+{"Time":"2022-07-10T22:42:11.92576-04:00","Action":"output","Package":"github.com/robherley/go-test-example","Output":"?   \tgithub.com/robherley/go-test-example\t[no test files]\n"}
+{"Time":"2022-07-10T22:42:11.926603-04:00","Action":"skip","Package":"github.com/robherley/go-test-example","Elapsed":0.001}
+{"Time":"2022-07-10T22:42:11.931066-04:00","Action":"run","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess"}
+{"Time":"2022-07-10T22:42:11.931141-04:00","Action":"output","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess","Output":"=== RUN   TestSuccess\n"}
+{"Time":"2022-07-10T22:42:11.931166-04:00","Action":"run","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess/Subtest(1)"}
+{"Time":"2022-07-10T22:42:11.931185-04:00","Action":"output","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess/Subtest(1)","Output":"=== RUN   TestSuccess/Subtest(1)\n"}
+{"Time":"2022-07-10T22:42:11.931204-04:00","Action":"output","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess/Subtest(1)","Output":"    success_test.go:19: hello from subtest #1\n"}
+{"Time":"2022-07-10T22:42:11.931239-04:00","Action":"run","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess/Subtest(2)"}
+{"Time":"2022-07-10T22:42:11.931284-04:00","Action":"output","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess/Subtest(2)","Output":"=== RUN   TestSuccess/Subtest(2)\n"}
+{"Time":"2022-07-10T22:42:11.9313-04:00","Action":"output","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess/Subtest(2)","Output":"    success_test.go:19: hello from subtest #2\n"}
+{"Time":"2022-07-10T22:42:11.931315-04:00","Action":"run","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess/Subtest(3)"}
+{"Time":"2022-07-10T22:42:11.931332-04:00","Action":"output","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess/Subtest(3)","Output":"=== RUN   TestSuccess/Subtest(3)\n"}
+{"Time":"2022-07-10T22:42:11.931347-04:00","Action":"output","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess/Subtest(3)","Output":"    success_test.go:19: hello from subtest #3\n"}
+{"Time":"2022-07-10T22:42:11.931366-04:00","Action":"output","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess","Output":"--- PASS: TestSuccess (0.00s)\n"}
+{"Time":"2022-07-10T22:42:11.931383-04:00","Action":"output","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess/Subtest(1)","Output":"    --- PASS: TestSuccess/Subtest(1) (0.00s)\n"}
+{"Time":"2022-07-10T22:42:11.93144-04:00","Action":"pass","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess/Subtest(1)","Elapsed":0}
+{"Time":"2022-07-10T22:42:11.931461-04:00","Action":"output","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess/Subtest(2)","Output":"    --- PASS: TestSuccess/Subtest(2) (0.00s)\n"}
+{"Time":"2022-07-10T22:42:11.931477-04:00","Action":"pass","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess/Subtest(2)","Elapsed":0}
+{"Time":"2022-07-10T22:42:11.931492-04:00","Action":"output","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess/Subtest(3)","Output":"    --- PASS: TestSuccess/Subtest(3) (0.00s)\n"}
+{"Time":"2022-07-10T22:42:11.931506-04:00","Action":"pass","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess/Subtest(3)","Elapsed":0}
+{"Time":"2022-07-10T22:42:11.931521-04:00","Action":"pass","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess","Elapsed":0}
+{"Time":"2022-07-10T22:42:11.931536-04:00","Action":"output","Package":"github.com/robherley/go-test-example/success","Output":"PASS\n"}
+{"Time":"2022-07-10T22:42:11.931552-04:00","Action":"output","Package":"github.com/robherley/go-test-example/success","Output":"ok  \tgithub.com/robherley/go-test-example/success\t(cached)\n"}
+{"Time":"2022-07-10T22:42:11.931572-04:00","Action":"pass","Package":"github.com/robherley/go-test-example/success","Elapsed":0.001}
+{"Time":"2022-07-10T22:42:11.933412-04:00","Action":"run","Package":"github.com/robherley/go-test-example/skipme","Test":"TestSkip"}
+{"Time":"2022-07-10T22:42:11.933502-04:00","Action":"output","Package":"github.com/robherley/go-test-example/skipme","Test":"TestSkip","Output":"=== RUN   TestSkip\n"}
+{"Time":"2022-07-10T22:42:11.933535-04:00","Action":"output","Package":"github.com/robherley/go-test-example/skipme","Test":"TestSkip","Output":"    skipme_test.go:6: skip me\n"}
+{"Time":"2022-07-10T22:42:11.933551-04:00","Action":"output","Package":"github.com/robherley/go-test-example/skipme","Test":"TestSkip","Output":"--- SKIP: TestSkip (0.00s)\n"}
+{"Time":"2022-07-10T22:42:11.933563-04:00","Action":"skip","Package":"github.com/robherley/go-test-example/skipme","Test":"TestSkip","Elapsed":0}
+{"Time":"2022-07-10T22:42:11.933575-04:00","Action":"output","Package":"github.com/robherley/go-test-example/skipme","Output":"PASS\n"}
+{"Time":"2022-07-10T22:42:11.933587-04:00","Action":"output","Package":"github.com/robherley/go-test-example/skipme","Output":"ok  \tgithub.com/robherley/go-test-example/skipme\t(cached)\n"}
+{"Time":"2022-07-10T22:42:11.9336-04:00","Action":"pass","Package":"github.com/robherley/go-test-example/skipme","Elapsed":0}
+{"Time":"2022-07-10T22:42:12.108255-04:00","Action":"run","Package":"github.com/robherley/go-test-example/boom","Test":"TestFatal"}
+{"Time":"2022-07-10T22:42:12.108346-04:00","Action":"output","Package":"github.com/robherley/go-test-example/boom","Test":"TestFatal","Output":"=== RUN   TestFatal\n"}
+{"Time":"2022-07-10T22:42:12.108374-04:00","Action":"output","Package":"github.com/robherley/go-test-example/boom","Test":"TestFatal","Output":"    boom_test.go:6: this was a failure\n"}
+{"Time":"2022-07-10T22:42:12.108399-04:00","Action":"output","Package":"github.com/robherley/go-test-example/boom","Test":"TestFatal","Output":"--- FAIL: TestFatal (0.00s)\n"}
+{"Time":"2022-07-10T22:42:12.108414-04:00","Action":"fail","Package":"github.com/robherley/go-test-example/boom","Test":"TestFatal","Elapsed":0}
+{"Time":"2022-07-10T22:42:12.108429-04:00","Action":"run","Package":"github.com/robherley/go-test-example/boom","Test":"TestPanic"}
+{"Time":"2022-07-10T22:42:12.108442-04:00","Action":"output","Package":"github.com/robherley/go-test-example/boom","Test":"TestPanic","Output":"=== RUN   TestPanic\n"}
+{"Time":"2022-07-10T22:42:12.108455-04:00","Action":"output","Package":"github.com/robherley/go-test-example/boom","Test":"TestPanic","Output":"--- FAIL: TestPanic (0.00s)\n"}
+{"Time":"2022-07-10T22:42:12.110899-04:00","Action":"output","Package":"github.com/robherley/go-test-example/boom","Test":"TestPanic","Output":"panic: this was a panic [recovered]\n"}
+{"Time":"2022-07-10T22:42:12.111001-04:00","Action":"output","Package":"github.com/robherley/go-test-example/boom","Test":"TestPanic","Output":"\tpanic: this was a panic\n"}
+{"Time":"2022-07-10T22:42:12.111021-04:00","Action":"output","Package":"github.com/robherley/go-test-example/boom","Test":"TestPanic","Output":"\n"}
+{"Time":"2022-07-10T22:42:12.111052-04:00","Action":"output","Package":"github.com/robherley/go-test-example/boom","Test":"TestPanic","Output":"goroutine 35 [running]:\n"}
+{"Time":"2022-07-10T22:42:12.111084-04:00","Action":"output","Package":"github.com/robherley/go-test-example/boom","Test":"TestPanic","Output":"testing.tRunner.func1.2({0x10fc2a0, 0x1147ec0})\n"}
+{"Time":"2022-07-10T22:42:12.111098-04:00","Action":"output","Package":"github.com/robherley/go-test-example/boom","Test":"TestPanic","Output":"\t/usr/local/go/src/testing/testing.go:1389 +0x24e\n"}
+{"Time":"2022-07-10T22:42:12.111181-04:00","Action":"output","Package":"github.com/robherley/go-test-example/boom","Test":"TestPanic","Output":"testing.tRunner.func1()\n"}
+{"Time":"2022-07-10T22:42:12.111198-04:00","Action":"output","Package":"github.com/robherley/go-test-example/boom","Test":"TestPanic","Output":"\t/usr/local/go/src/testing/testing.go:1392 +0x39f\n"}
+{"Time":"2022-07-10T22:42:12.111214-04:00","Action":"output","Package":"github.com/robherley/go-test-example/boom","Test":"TestPanic","Output":"panic({0x10fc2a0, 0x1147ec0})\n"}
+{"Time":"2022-07-10T22:42:12.111229-04:00","Action":"output","Package":"github.com/robherley/go-test-example/boom","Test":"TestPanic","Output":"\t/usr/local/go/src/runtime/panic.go:838 +0x207\n"}
+{"Time":"2022-07-10T22:42:12.111277-04:00","Action":"output","Package":"github.com/robherley/go-test-example/boom","Test":"TestPanic","Output":"github.com/robherley/go-test-example/boom_test.TestPanic(0x0?)\n"}
+{"Time":"2022-07-10T22:42:12.111293-04:00","Action":"output","Package":"github.com/robherley/go-test-example/boom","Test":"TestPanic","Output":"\t/Users/robherley/dev/go-test-action/tmp/go-test-example/boom/boom_test.go:10 +0x27\n"}
+{"Time":"2022-07-10T22:42:12.111306-04:00","Action":"output","Package":"github.com/robherley/go-test-example/boom","Test":"TestPanic","Output":"testing.tRunner(0xc0001196c0, 0x1126f60)\n"}
+{"Time":"2022-07-10T22:42:12.111318-04:00","Action":"output","Package":"github.com/robherley/go-test-example/boom","Test":"TestPanic","Output":"\t/usr/local/go/src/testing/testing.go:1439 +0x102\n"}
+{"Time":"2022-07-10T22:42:12.111331-04:00","Action":"output","Package":"github.com/robherley/go-test-example/boom","Test":"TestPanic","Output":"created by testing.(*T).Run\n"}
+{"Time":"2022-07-10T22:42:12.111344-04:00","Action":"output","Package":"github.com/robherley/go-test-example/boom","Test":"TestPanic","Output":"\t/usr/local/go/src/testing/testing.go:1486 +0x35f\n"}
+{"Time":"2022-07-10T22:42:12.111458-04:00","Action":"fail","Package":"github.com/robherley/go-test-example/boom","Test":"TestPanic","Elapsed":0}
+{"Time":"2022-07-10T22:42:12.111503-04:00","Action":"output","Package":"github.com/robherley/go-test-example/boom","Output":"FAIL\tgithub.com/robherley/go-test-example/boom\t0.103s\n"}
+{"Time":"2022-07-10T22:42:12.111534-04:00","Action":"fail","Package":"github.com/robherley/go-test-example/boom","Elapsed":0.103}

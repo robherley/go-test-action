@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# fake environment & files for local development
+
+mkdir -p tmp/
+echo "" > tmp/summary.md
+
+export INPUT_MODULEDIRECTORY="tmp/go-test-example"
+export INPUT_TESTARGUMENTS="./..."
+export GITHUB_STEP_SUMMARY="tmp/summary.md"

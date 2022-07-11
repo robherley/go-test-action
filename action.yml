@@ -1,0 +1,14 @@
+name: 'Go Test Action'
+description: 'Run `go test` with rich summary output and annotations.'
+inputs:
+  moduleDirectory:
+    description: 'Directory of go module to test'
+    required: false
+    default: '.'
+  testArguments:
+    description: 'Arguments to `go test`, `-json` will be prepended'
+    required: false
+    default: './...'
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
