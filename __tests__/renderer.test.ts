@@ -1,7 +1,11 @@
-import { getTestStdout } from './helpers'
+import { getTestStdout, mockActionsCoreLogging } from './helpers'
 import Renderer from '../src/renderer'
 
 describe('Renderer', () => {
+  beforeEach(async () => {
+    mockActionsCoreLogging()
+  })
+
   it('correctly parses test2json output', async () => {
     const stdout = await getTestStdout()
 

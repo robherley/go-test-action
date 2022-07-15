@@ -1,4 +1,5 @@
 import * as fs from 'fs/promises'
+import * as core from '@actions/core'
 import path from 'path'
 
 export const testFixturesDirectory = path.join(__dirname, 'fixtures')
@@ -19,7 +20,7 @@ module github.com/robherley/go-test-example
 go 1.18
 `
 
-export const setupActionsInputs = async () => {
+export const setupActionsInputs = () => {
   process.env['INPUT_MODULEDIRECTORY'] = testModuleDirectory
   process.env['INPUT_TESTARGUMENTS'] = testArguments
 }
@@ -45,4 +46,21 @@ export const getTestStdout = async (): Promise<string> => {
     path.join(testFixturesDirectory, 'gotestoutput.txt')
   )
   return buf.toString()
+}
+
+export const mockActionsCoreLogging = () => {
+  type LogFuncs = 'debug' | 'error' | 'warning' | 'notice' | 'info'
+  const logMethods: LogFuncs[] = ['debug', 'error', 'warning', 'notice', 'info']
+  logMethods.forEach(method => {
+    jest
+      .spyOn(core, method)
+      .mockImplementation(
+        (msg: string | Error, props?: core.AnnotationProperties) => {
+          console.log(
+            `[mock: core.${method}(${props ? JSON.stringify(props) : ''})]:`,
+            msg
+          )
+        }
+      )
+  })
 }
