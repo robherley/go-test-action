@@ -5,6 +5,7 @@ const config: Config.InitialOptions = {
   testEnvironment: 'node',
   testPathIgnorePatterns: ['helpers.ts'],
   reporters: ['default', 'github-actions'],
+  clearMocks: true,
 }
 
 export default config

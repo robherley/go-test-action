@@ -8,6 +8,7 @@ import {
   testModuleDirectory,
   mockProcessExit,
   createFakeGoModule,
+  mockActionsCoreLogging,
 } from './helpers'
 import Tester from '../src/tester'
 import Renderer from '../src/renderer'
@@ -18,7 +19,8 @@ describe('Tester', () => {
   })
 
   beforeEach(async () => {
-    await setupActionsInputs()
+    mockActionsCoreLogging()
+    setupActionsInputs()
   })
 
   it("sets defaults if inputs aren't set", async () => {
