@@ -17,7 +17,7 @@ inputs:
     required: false
     default: 'false'
   omitPie:
-    description: 'Omit the pie chart from the final render'
+    description: 'Omit the pie chart from the summary output'
     required: false
     default: 'false'
 runs:
