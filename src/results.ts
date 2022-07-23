@@ -1,4 +1,3 @@
-import * as core from '@actions/core'
 import type { TestEvent, TestEventActionConclusion } from './events'
 
 export type TestResults = { [testName: string]: TestResult }
@@ -21,7 +20,9 @@ class PackageResult {
 
   constructor(packageEvent: TestEvent, events: TestEvent[]) {
     this.packageEvent = packageEvent
-    this.events = events.filter(e => !e.isPackageLevel)
+    this.events = events.filter(
+      e => !e.isPackageLevel && e.package === this.packageEvent.package
+    )
 
     this.eventsToResults()
   }
@@ -43,13 +44,6 @@ class PackageResult {
    */
   private eventsToResults() {
     for (let event of this.events) {
-      if (event.package !== this.packageEvent.package) {
-        core.debug(
-          `received test event of package '${event.package}', expected '${this.packageEvent.package}'. skipping...`
-        )
-        continue
-      }
-
       if (!event.isConclusive) {
         // if the event doesn't have a conclusion action, we don't need anything else from it
         continue
