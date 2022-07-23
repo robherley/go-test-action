@@ -10,15 +10,15 @@ import {
   createFakeGoModule,
   mockActionsCoreLogging,
 } from './helpers'
-import Tester from '../src/tester'
+import Runner from '../src/runner'
 import Renderer from '../src/renderer'
 
-describe('Tester', () => {
+describe('runner', () => {
   beforeAll(async () => {
     await createFakeGoModule()
   })
 
-  beforeEach(async () => {
+  beforeEach(() => {
     mockActionsCoreLogging()
     setupActionsInputs()
   })
@@ -26,24 +26,32 @@ describe('Tester', () => {
   it("sets defaults if inputs aren't set", async () => {
     delete process.env['INPUT_MODULEDIRECTORY']
     delete process.env['INPUT_TESTARGUMENTS']
+    delete process.env['INPUT_OMITUNTESTEDPACKAGES']
+    delete process.env['INPUT_OMITPIE']
 
-    const tester = new Tester()
-    expect(tester.moduleDirectory).toBe('.')
-    expect(tester.testArguments).toEqual(['./...'])
+    const runner = new Runner()
+    expect(runner.moduleDirectory).toBe('.')
+    expect(runner.testArguments).toEqual(['./...'])
+    expect(runner.omitUntestedPackages).toEqual(false)
+    expect(runner.omitPie).toEqual(false)
   })
 
   it('uses inputs if they are set', async () => {
     process.env['INPUT_MODULEDIRECTORY'] = '/some/random/directory'
     process.env['INPUT_TESTARGUMENTS'] = '-foo -bar\t-baz'
+    process.env['INPUT_OMITUNTESTEDPACKAGES'] = 'true'
+    process.env['INPUT_OMITPIE'] = 'true'
 
-    const tester = new Tester()
-    expect(tester.moduleDirectory).toBe('/some/random/directory')
-    expect(tester.testArguments).toEqual(['-foo', '-bar', '-baz'])
+    const runner = new Runner()
+    expect(runner.moduleDirectory).toBe('/some/random/directory')
+    expect(runner.testArguments).toEqual(['-foo', '-bar', '-baz'])
+    expect(runner.omitUntestedPackages).toEqual(true)
+    expect(runner.omitPie).toEqual(true)
   })
 
   it('resolves module name from go.mod', async () => {
-    const tester = new Tester()
-    const modName = await tester.findModuleName()
+    const runner = new Runner()
+    const modName = await runner.findModuleName()
 
     expect(modName).toBe('github.com/robherley/go-test-example')
   })
@@ -54,8 +62,8 @@ describe('Tester', () => {
 
     process.env['INPUT_MODULEDIRECTORY'] = emptyModule
 
-    const tester = new Tester()
-    const modName = await tester.findModuleName()
+    const runner = new Runner()
+    const modName = await runner.findModuleName()
 
     expect(modName).toBeNull()
   })
@@ -64,15 +72,15 @@ describe('Tester', () => {
     const spyExit = mockProcessExit()
 
     jest
-      .spyOn(Renderer.prototype, 'toSummary')
+      .spyOn(Renderer.prototype, 'writeSummary')
       .mockImplementationOnce(async () => {})
 
     const spy = jest
       .spyOn(actionsExec, 'exec')
       .mockImplementationOnce(async () => 0)
 
-    const tester = new Tester()
-    await tester.run()
+    const runner = new Runner()
+    await runner.run()
 
     expect(spy).toHaveBeenCalledWith(
       'go',
@@ -90,13 +98,13 @@ describe('Tester', () => {
     const spyExit = mockProcessExit()
 
     jest
-      .spyOn(Renderer.prototype, 'toSummary')
+      .spyOn(Renderer.prototype, 'writeSummary')
       .mockImplementationOnce(async () => {})
 
     jest.spyOn(actionsExec, 'exec').mockImplementationOnce(async () => 2)
 
-    const tester = new Tester()
-    await tester.run()
+    const runner = new Runner()
+    await runner.run()
 
     expect(spyExit).toBeCalledWith(2)
   })

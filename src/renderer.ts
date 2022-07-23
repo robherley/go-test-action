@@ -40,30 +40,10 @@ class Renderer {
   ) {
     this.moduleName = moduleName
     this.testEvents = testEvents
-    this.stderr = 'stderr'
+    this.stderr = stderr
     this.omitUntestedPackages = omitUntestedPackages
     this.omitPie = omitPie
     this.packageResults = this.calculatePackageResults()
-  }
-
-  /**
-   * Filter through test events and calculate the results per package
-   * @returns list of package results
-   */
-  calculatePackageResults(): PackageResult[] {
-    const pkgLevelConclusiveEvents = this.testEvents
-      .filter(event => event.isConclusive && event.isPackageLevel)
-      .sort((a, b) => a.package.localeCompare(b.package))
-
-    const packageResults: PackageResult[] = []
-    for (let pkgEvent of pkgLevelConclusiveEvents) {
-      const otherPackageEvents = this.testEvents.filter(
-        e => e.package === pkgEvent.package && !e.isPackageLevel
-      )
-      packageResults.push(new PackageResult(pkgEvent, otherPackageEvents))
-    }
-
-    return packageResults
   }
 
   /**
@@ -71,21 +51,17 @@ class Renderer {
    * https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#adding-a-job-summary
    */
   async writeSummary() {
-    const rows: SummaryTableRow[] = [this.headers]
-
-    const resultsToRender = this.packageResults.filter(
-      result => this.omitUntestedPackages && !result.hasTests()
+    const resultsToRender = this.packageResults.filter(result =>
+      this.omitUntestedPackages ? result.hasTests() : true
     )
 
     if (resultsToRender.length === 0) {
       core.debug('no packages with tests, skipping render')
+      return
     }
 
-    for (let packageResult of this.packageResults) {
-      for (let [key, value] of Object.entries(packageResult.conclusions)) {
-        this.totalConclusions[key as TestEventActionConclusion] += value
-      }
-
+    const rows: SummaryTableRow[] = [this.headers]
+    for (let packageResult of resultsToRender) {
       rows.push(...this.renderPackageRows(packageResult))
     }
 
@@ -99,6 +75,30 @@ class Renderer {
       .addRaw('</div>')
       .addRaw(this.renderStderr())
       .write()
+  }
+
+  /**
+   * Filter through test events and calculate the results per package
+   * @returns list of package results
+   */
+  private calculatePackageResults(): PackageResult[] {
+    const pkgLevelConclusiveEvents = this.testEvents
+      .filter(event => event.isConclusive && event.isPackageLevel)
+      .sort((a, b) => a.package.localeCompare(b.package))
+
+    const packageResults: PackageResult[] = []
+    for (let pkgEvent of pkgLevelConclusiveEvents) {
+      const otherPackageEvents = this.testEvents.filter(
+        e => e.package === pkgEvent.package && !e.isPackageLevel
+      )
+      const packageResult = new PackageResult(pkgEvent, otherPackageEvents)
+      for (let [key, value] of Object.entries(packageResult.conclusions)) {
+        this.totalConclusions[key as TestEventActionConclusion] += value
+      }
+      packageResults.push(packageResult)
+    }
+
+    return packageResults
   }
 
   /**
@@ -132,7 +132,7 @@ class Renderer {
 
     const conclusionText = conclusiveTestEvents
       .filter(c => this.totalConclusions[c])
-      .map(c => `${this.totalConclusions[c]} ${c}ed`)
+      .map(c => `${this.totalConclusions[c]} ${c === 'skip' ? 'skipp' : c}ed`)
       .join(', ')
 
     if (conclusionText.length !== 0) {
@@ -209,7 +209,7 @@ class Renderer {
    */
   private renderPie(): string {
     if (this.omitPie) {
-      return ''
+      return '<br>' // just return break instead
     }
 
     const pieConfig: any = {
