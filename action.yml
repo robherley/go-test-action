@@ -12,6 +12,14 @@ inputs:
     description: 'Arguments to `go test`, `-json` will be prepended'
     required: false
     default: './...'
+  omitUntestedPackages:
+    description: 'Omit any packages from summary output that do not have tests'
+    required: false
+    default: 'false'
+  omitPie:
+    description: 'Omit the pie chart from the final render'
+    required: false
+    default: 'false'
 runs:
   using: 'node16'
   main: 'dist/index.js'

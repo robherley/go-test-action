@@ -6,14 +6,21 @@ import { exec } from '@actions/exec'
 
 import Renderer from './renderer'
 
-class Tester {
+import { parseTestEvents } from './events'
+
+class Runner {
   moduleDirectory = '.'
   testArguments = ['./...']
+  omitUntestedPackages = false
+  omitPie = false
 
   constructor() {
     this.getInputs()
   }
 
+  /**
+   * Runs the go tests, captures any output, builds annotations and write the summary
+   */
   async run() {
     const moduleName = await this.findModuleName()
 
@@ -22,16 +29,25 @@ class Tester {
       core.error(`\`go test\` returned nonzero exit code: ${retCode}`)
     }
 
-    if (stderr.length !== 0) {
-      core.warning(stderr)
-    }
+    const testEvents = parseTestEvents(stdout)
 
-    const renderer = new Renderer(moduleName, stdout)
-    await renderer.toSummary()
+    const renderer = new Renderer(
+      moduleName,
+      testEvents,
+      stderr,
+      this.omitUntestedPackages,
+      this.omitPie
+    )
+
+    await renderer.writeSummary()
 
     process.exit(retCode)
   }
 
+  /**
+   * Deduces go module name from go.mod in working directory
+   * @returns go module name
+   */
   async findModuleName(): Promise<string | null> {
     const modulePath = path.join(path.resolve(this.moduleDirectory), 'go.mod')
 
@@ -48,6 +64,10 @@ class Tester {
     }
   }
 
+  /**
+   * Execs `go test` with specified arguments, capturing the output
+   * @returns return code, stdout, stderr of `go test`
+   */
   private async goTest(): Promise<{
     retCode: number
     stdout: string
@@ -82,6 +102,9 @@ class Tester {
     }
   }
 
+  /**
+   * Parses GitHub Actions inputs from environment
+   */
   private getInputs() {
     const moduleDirectory = core.getInput('moduleDirectory')
     if (moduleDirectory) {
@@ -92,7 +115,17 @@ class Tester {
     if (testArguments) {
       this.testArguments = testArguments.split(/\s/).filter(arg => arg.length)
     }
+
+    const omitUntestedPackages = core.getInput('omitUntestedPackages')
+    if (omitUntestedPackages) {
+      this.omitUntestedPackages = core.getBooleanInput('omitUntestedPackages')
+    }
+
+    const omitPie = core.getInput('omitPie')
+    if (omitPie) {
+      this.omitPie = core.getBooleanInput('omitPie')
+    }
   }
 }
 
-export default Tester
+export default Runner
