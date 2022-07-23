@@ -209,7 +209,7 @@ class Renderer {
    */
   private renderPie(): string {
     if (this.omitPie) {
-      return '<br>' // just return break instead
+      return '<br><br>' // just return double break instead
     }
 
     const pieConfig: any = {
