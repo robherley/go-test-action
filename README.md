@@ -6,14 +6,12 @@ Powered by [Job Summaries](https://github.blog/2022-05-09-supercharging-github-a
 
 ## Inputs
 
-- `moduleDirectory` (optional): relative path to the directory containing the `go.mod` of the module you wish to test
-  - Default: `.`
-- `testArguments` (optional): arguments to pass to `go test`, `-json` will be prepended automatically
-  - Default: `./...`
-- `omitUntestedPackages` (optional): omit any go packages that don't have any tests from the summary output
-  - Default: `false`
-- `omitPie` (optional): omit the pie chart from the summary output
-  - Default: `false`
+| Input | Default | Description |
+| -     | -       | -           |
+| moduleDirectory | `.` | relative path to the directory containing the `go.mod` of the module you wish to test |
+| testArguments | `./...` | arguments to pass to `go test`, `-json` will be prepended automatically |
+| omitUntestedPackages | `false` |  omit any go packages that don't have any tests from the summary output |
+| omitPie | `false` | omit the pie chart from the summary output
 
 ## Demo
 
