@@ -99,6 +99,20 @@ describe('renderer', () => {
     })
   })
 
+  it('renders nothing if there are no test events', async () => {
+    const renderer = new Renderer(
+      'github.com/robherley/empty-module',
+      [],
+      '',
+      false,
+      false
+    )
+    await renderer.writeSummary()
+
+    const file = await fs.readFile(testSummaryFilePath, { encoding: 'utf8' })
+    expect(file).toEqual('')
+  })
+
   it('renders heading', async () => {
     const renderer = await getRenderer()
     await renderer.writeSummary()
