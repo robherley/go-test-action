@@ -19,6 +19,7 @@
     "@types/jest": "^28.1.4",
     "@types/node": "^18.0.3",
     "@vercel/ncc": "^0.34.0",
+    "cheerio": "^1.0.0-rc.12",
     "jest": "^28.1.2",
     "ts-jest": "^28.0.5",
     "ts-node": "^10.8.2",

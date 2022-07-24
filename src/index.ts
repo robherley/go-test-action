@@ -1,7 +1,7 @@
 import * as core from '@actions/core'
-import Tester from './tester'
+import Runner from './runner'
 
-new Tester().run().catch(err => {
+new Runner().run().catch(err => {
   core.error(err)
   process.exit(1)
 })

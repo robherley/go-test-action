@@ -20,9 +20,23 @@ module github.com/robherley/go-test-example
 go 1.18
 `
 
+export const createSummaryFile = async () => {
+  process.env['GITHUB_STEP_SUMMARY'] = testSummaryFilePath
+  await fs.writeFile(testSummaryFilePath, '', { encoding: 'utf8' })
+  core.summary.emptyBuffer()
+}
+
+export const removeSummaryFile = async () => {
+  delete process.env['GITHUB_STEP_SUMMARY']
+  await fs.unlink(testSummaryFilePath)
+  core.summary.emptyBuffer()
+}
+
 export const setupActionsInputs = () => {
   process.env['INPUT_MODULEDIRECTORY'] = testModuleDirectory
   process.env['INPUT_TESTARGUMENTS'] = testArguments
+  process.env['INPUT_OMITUNTESTEDPACKAGES'] = 'false'
+  process.env['INPUT_OMITPIE'] = 'false'
 }
 
 export const createFakeGoModule = async () => {
@@ -48,7 +62,7 @@ export const getTestStdout = async (): Promise<string> => {
   return buf.toString()
 }
 
-export const mockActionsCoreLogging = () => {
+export const mockActionsCoreLogging = (silent = true) => {
   type LogFuncs = 'debug' | 'error' | 'warning' | 'notice' | 'info'
   const logMethods: LogFuncs[] = ['debug', 'error', 'warning', 'notice', 'info']
   logMethods.forEach(method => {
@@ -56,6 +70,7 @@ export const mockActionsCoreLogging = () => {
       .spyOn(core, method)
       .mockImplementation(
         (msg: string | Error, props?: core.AnnotationProperties) => {
+          if (silent) return
           console.log(
             `[mock: core.${method}(${props ? JSON.stringify(props) : ''})]:`,
             msg
