@@ -56,7 +56,7 @@ export function parseTestEvents(stdout: string): TestEvent[] {
         package: json.Package,
         test: json.Test,
         elapsed: json.Elapsed,
-        output: json.Output,
+        output: unescapeOutput(json.Output),
         isCached: json.Output?.includes('\t(cached)') || false,
         isSubtest: json.Test?.includes('/') || false, // afaik there isn't a better indicator in test2json
         isPackageLevel: typeof json.Test === 'undefined',
@@ -69,4 +69,17 @@ export function parseTestEvents(stdout: string): TestEvent[] {
   }
 
   return events
+}
+
+/**
+ * Try to unescape new lines in output
+ *
+ * @param output
+ */
+function unescapeOutput(output: string): string {
+  try {
+    return JSON.parse(output)
+  } catch (e) {
+    return output
+  }
 }
