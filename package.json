@@ -1,6 +1,6 @@
 {
   "name": "go-test-action",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "description": "GitHub Action to run go tests with rich summary output and annotations.",
   "main": "dist/index.js",
   "scripts": {

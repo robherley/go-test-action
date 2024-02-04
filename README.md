@@ -15,8 +15,6 @@ Powered by [Job Summaries](https://github.blog/2022-05-09-supercharging-github-a
 
 ## Demo
 
-To interact with an example, [check it out here](https://github.com/robherley/go-test-example/actions/runs/2725452630/attempts/1#summary-7484360764).
-
 Tests are organized per package, with a brief summary of individual test results:
 
 ![summary overview](docs/img/overview.png)
