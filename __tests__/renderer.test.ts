@@ -27,6 +27,7 @@ const getRenderer = async (): Promise<Renderer> => {
     testEvents,
     '', // stderr
     false, // omitUntestedPackages
+    false, // omitSuccessfulPackages
     false // omitPie
   )
 }
@@ -104,6 +105,7 @@ describe('renderer', () => {
       'github.com/robherley/empty-module',
       [],
       '',
+      false,
       false,
       false
     )

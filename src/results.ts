@@ -35,6 +35,10 @@ class PackageResult {
     return this.testCount() !== 0
   }
 
+  public justSuccessfulTests(): boolean {
+    return this.conclusions.pass === 0 && this.conclusions.fail === 0
+  }
+
   public output(): string {
     return this.events.map(e => e.output).join('')
   }

@@ -16,6 +16,7 @@ class Renderer {
   testEvents: TestEvent[]
   stderr: string
   omitUntestedPackages: boolean
+  omitSuccessfulPackages: boolean
   omitPie: boolean
   packageResults: PackageResult[]
   headers: SummaryTableRow = [
@@ -36,12 +37,14 @@ class Renderer {
     testEvents: TestEvent[],
     stderr: string,
     omitUntestedPackages: boolean,
+    omitSuccessfulPackages: boolean,
     omitPie: boolean
   ) {
     this.moduleName = moduleName
     this.testEvents = testEvents
     this.stderr = stderr
     this.omitUntestedPackages = omitUntestedPackages
+    this.omitSuccessfulPackages = omitSuccessfulPackages
     this.omitPie = omitPie
     this.packageResults = this.calculatePackageResults()
   }
@@ -51,9 +54,11 @@ class Renderer {
    * https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#adding-a-job-summary
    */
   async writeSummary() {
-    const resultsToRender = this.packageResults.filter(result =>
-      this.omitUntestedPackages ? result.hasTests() : true
-    )
+    const resultsToRender = this.packageResults
+      .filter(result => (this.omitUntestedPackages ? result.hasTests() : true))
+      .filter(result =>
+        this.omitSuccessfulPackages ? result.justSuccessfulTests() : true
+      )
 
     if (resultsToRender.length === 0) {
       core.debug('no packages with tests, skipping render')
