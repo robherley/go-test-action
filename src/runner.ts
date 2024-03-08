@@ -12,6 +12,7 @@ class Runner {
   moduleDirectory = '.'
   testArguments = ['./...']
   omitUntestedPackages = false
+  omitSuccessfulPackages = false
   omitPie = false
 
   constructor() {
@@ -36,6 +37,7 @@ class Runner {
       testEvents,
       stderr,
       this.omitUntestedPackages,
+      this.omitSuccessfulPackages,
       this.omitPie
     )
 
@@ -119,6 +121,13 @@ class Runner {
     const omitUntestedPackages = core.getInput('omitUntestedPackages')
     if (omitUntestedPackages) {
       this.omitUntestedPackages = core.getBooleanInput('omitUntestedPackages')
+    }
+
+    const omitSuccessfulPackages = core.getInput('omitSuccessfulPackages')
+    if (omitSuccessfulPackages) {
+      this.omitSuccessfulPackages = core.getBooleanInput(
+        'omitSuccessfulPackages'
+      )
     }
 
     const omitPie = core.getInput('omitPie')
