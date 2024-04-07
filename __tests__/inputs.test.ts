@@ -80,4 +80,21 @@ describe('renderer', () => {
     )
     expect(core.warning).toHaveBeenCalled()
   })
+
+  it('does not make an annotation if the deprecated inputs are not used', () => {
+    mockGetInput.mockImplementation((name: string) => {
+      switch (name) {
+        case 'omitUntestedPackages':
+        case 'omitSuccessfulPackages':
+        case 'omitPie':
+          return 'false'
+        default:
+          return ''
+      }
+    })
+    mockGetBooleanInput.mockReturnValue(false)
+
+    getInputs()
+    expect(core.warning).not.toHaveBeenCalled()
+  })
 })
