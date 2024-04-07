@@ -12,6 +12,7 @@ import {
 import { parseTestEvents } from '../src/events'
 import Renderer from '../src/renderer'
 import { SummaryTableCell } from '@actions/core/lib/summary'
+import { OmitOption } from '../src/inputs'
 
 const loadSummaryHTML = async (): Promise<cheerio.CheerioAPI> => {
   const file = await fs.readFile(testSummaryFilePath, { encoding: 'utf8' })
@@ -26,9 +27,7 @@ const getRenderer = async (): Promise<Renderer> => {
     'github.com/robherley/go-test-example',
     testEvents,
     '', // stderr
-    false, // omitUntestedPackages
-    false, // omitSuccessfulPackages
-    false // omitPie
+    new Set()
   )
 }
 
@@ -105,9 +104,7 @@ describe('renderer', () => {
       'github.com/robherley/empty-module',
       [],
       '',
-      false,
-      false,
-      false
+      new Set()
     )
     await renderer.writeSummary()
 
@@ -169,9 +166,9 @@ describe('renderer', () => {
     expect($.text()).toContain(pieData)
   })
 
-  it('does not render pie when omitPie is true', async () => {
+  it('does not render pie when pie in omit', async () => {
     const renderer = await getRenderer()
-    renderer.omitPie = true
+    renderer.omit.add(OmitOption.Pie)
     await renderer.writeSummary()
     const $ = await loadSummaryHTML()
 
@@ -201,22 +198,22 @@ describe('renderer', () => {
     })
   })
 
-  it('renders correct number of table rows when omitUntestedPackages is true', async () => {
+  it('renders correct number of table rows when skipped is in omit', async () => {
     const renderer = await getRenderer()
-    renderer.omitUntestedPackages = true
+    renderer.omit.add(OmitOption.Skipped)
     await renderer.writeSummary()
     const $ = await loadSummaryHTML()
 
     expect($('tr')).toHaveLength(7)
   })
 
-  it('renders correct number of table rows when omitUntestedPackages is true', async () => {
+  it('renders correct number of table rows when successful is in omit', async () => {
     const renderer = await getRenderer()
-    renderer.omitUntestedPackages = true
+    renderer.omit.add(OmitOption.Successful)
     await renderer.writeSummary()
     const $ = await loadSummaryHTML()
 
-    expect($('tr')).toHaveLength(7)
+    expect($('tr')).toHaveLength(5)
   })
 
   it('does not render stderr when empty', async () => {
@@ -236,5 +233,42 @@ describe('renderer', () => {
 
     expect($('summary:contains(Standard Error Output)')).toHaveLength(1)
     expect($('details:contains(hello world)')).toHaveLength(1)
+  })
+
+  it('does not render stderr when in omit', async () => {
+    const renderer = await getRenderer()
+    renderer.omit.add(OmitOption.Stderr)
+    renderer.stderr = 'i should not be rendered'
+    await renderer.writeSummary()
+    const $ = await loadSummaryHTML()
+
+    expect($('summary:contains(Standard Error Output)')).toHaveLength(0)
+  })
+
+  it('renders package test and output list', async () => {
+    const renderer = await getRenderer()
+    await renderer.writeSummary()
+    const $ = await loadSummaryHTML()
+
+    expect($('summary:contains(🧪 Tests)')).toHaveLength(4)
+    expect($('summary:contains(🖨️ Output)')).toHaveLength(4)
+  })
+
+  it('does not render package test list when in omit', async () => {
+    const renderer = await getRenderer()
+    renderer.omit.add(OmitOption.PackageTests)
+    await renderer.writeSummary()
+    const $ = await loadSummaryHTML()
+
+    expect($('summary:contains(🧪 Tests)')).toHaveLength(0)
+  })
+
+  it('does not render package output list when in omit', async () => {
+    const renderer = await getRenderer()
+    renderer.omit.add(OmitOption.PackageOutput)
+    await renderer.writeSummary()
+    const $ = await loadSummaryHTML()
+
+    expect($('summary:contains(🖨️ Output)')).toHaveLength(0)
   })
 })

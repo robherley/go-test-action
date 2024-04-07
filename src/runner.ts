@@ -5,19 +5,14 @@ import * as core from '@actions/core'
 import { exec } from '@actions/exec'
 
 import Renderer from './renderer'
-
 import { parseTestEvents } from './events'
+import { Inputs, getInputs } from './inputs'
 
 class Runner {
-  moduleDirectory = '.'
-  testArguments = ['./...']
-  omitUntestedPackages = false
-  omitSuccessfulPackages = false
-  omitPie = false
-  fromJSONFile: string | null = null
+  inputs: Inputs
 
   constructor() {
-    this.getInputs()
+    this.inputs = getInputs()
   }
 
   /**
@@ -26,21 +21,18 @@ class Runner {
   async run() {
     const moduleName = await this.findModuleName()
 
-    if (this.fromJSONFile) {
-      const stdout = await readFile(this.fromJSONFile)
+    if (this.inputs.fromJSONFile) {
+      const stdout = await readFile(this.inputs.fromJSONFile)
       const testEvents = parseTestEvents(stdout.toString())
 
       const renderer = new Renderer(
         moduleName,
         testEvents,
         '',
-        this.omitUntestedPackages,
-        this.omitSuccessfulPackages,
-        this.omitPie
+        this.inputs.omit
       )
-  
+
       await renderer.writeSummary()
-  
       process.exit(0)
     } else {
       const { retCode, stdout, stderr } = await this.goTest()
@@ -54,13 +46,10 @@ class Runner {
         moduleName,
         testEvents,
         stderr,
-        this.omitUntestedPackages,
-        this.omitSuccessfulPackages,
-        this.omitPie
+        this.inputs.omit
       )
-  
+
       await renderer.writeSummary()
-  
       process.exit(retCode)
     }
   }
@@ -70,7 +59,10 @@ class Runner {
    * @returns go module name
    */
   async findModuleName(): Promise<string | null> {
-    const modulePath = path.join(path.resolve(this.moduleDirectory), 'go.mod')
+    const modulePath = path.join(
+      path.resolve(this.inputs.moduleDirectory),
+      'go.mod'
+    )
 
     try {
       const contents = await readFile(modulePath)
@@ -98,7 +90,7 @@ class Runner {
     let stderr = ''
 
     const opts = {
-      cwd: this.moduleDirectory,
+      cwd: this.inputs.moduleDirectory,
       ignoreReturnCode: true,
       listeners: {
         stdout: (data: Buffer) => {
@@ -112,7 +104,7 @@ class Runner {
 
     const retCode = await exec(
       'go',
-      ['test', '-json', ...this.testArguments],
+      ['test', '-json', ...this.inputs.testArguments],
       opts
     )
 
@@ -120,43 +112,6 @@ class Runner {
       retCode,
       stdout,
       stderr,
-    }
-  }
-
-  /**
-   * Parses GitHub Actions inputs from environment
-   */
-  private getInputs() {
-    const moduleDirectory = core.getInput('moduleDirectory')
-    if (moduleDirectory) {
-      this.moduleDirectory = moduleDirectory
-    }
-
-    const testArguments = core.getInput('testArguments')
-    if (testArguments) {
-      this.testArguments = testArguments.split(/\s/).filter(arg => arg.length)
-    }
-
-    const omitUntestedPackages = core.getInput('omitUntestedPackages')
-    if (omitUntestedPackages) {
-      this.omitUntestedPackages = core.getBooleanInput('omitUntestedPackages')
-    }
-
-    const omitSuccessfulPackages = core.getInput('omitSuccessfulPackages')
-    if (omitSuccessfulPackages) {
-      this.omitSuccessfulPackages = core.getBooleanInput(
-        'omitSuccessfulPackages'
-      )
-    }
-
-    const omitPie = core.getInput('omitPie')
-    if (omitPie) {
-      this.omitPie = core.getBooleanInput('omitPie')
-    }
-
-    const fromJSONFile = core.getInput('fromJSONFile')
-    if (fromJSONFile) {
-      this.fromJSONFile = fromJSONFile
     }
   }
 }
