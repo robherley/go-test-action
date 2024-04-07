@@ -1,6 +1,7 @@
 # go-test-action
 
 - [go-test-action](#go-test-action)
+  - [Quick start](#quick-start)
   - [Inputs](#inputs)
   - [Screenshots](#screenshots)
   - [Examples](#examples)
@@ -11,6 +12,13 @@
 GitHub Action for running `go test ./...` and getting rich summary and annotations as output.
 
 Powered by [Job Summaries](https://github.blog/2022-05-09-supercharging-github-actions-with-job-summaries/), this Action will generate a convenient interactive viewer for tests based on Go's [test2json](https://pkg.go.dev/cmd/test2json) output. If there are any errors during `go test`, the Action will report back the same exit code, which will fail the job.
+
+## Quick start
+
+```yaml
+- name: Test
+  uses: robherley/go-test-action@v0
+```
 
 ## Inputs
 
