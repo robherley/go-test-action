@@ -51,11 +51,11 @@ class Renderer {
   async writeSummary() {
     const resultsToRender = this.packageResults
       .filter(result =>
-        this.omit.has(OmitOption.Skipped) ? result.hasTests() : true
+        this.omit.has(OmitOption.Untested) ? result.hasTests() : true
       )
       .filter(result =>
         this.omit.has(OmitOption.Successful)
-          ? result.justSuccessfulTests()
+          ? result.onlySuccessfulTests()
           : true
       )
 

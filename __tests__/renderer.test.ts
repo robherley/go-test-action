@@ -198,9 +198,9 @@ describe('renderer', () => {
     })
   })
 
-  it('renders correct number of table rows when skipped is in omit', async () => {
+  it('renders correct number of table rows when untested is in omit', async () => {
     const renderer = await getRenderer()
-    renderer.omit.add(OmitOption.Skipped)
+    renderer.omit.add(OmitOption.Untested)
     await renderer.writeSummary()
     const $ = await loadSummaryHTML()
 

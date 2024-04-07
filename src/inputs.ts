@@ -9,7 +9,7 @@ export interface Inputs {
 
 export enum OmitOption {
   // Omit untested packages from the summary
-  Skipped = 'skipped',
+  Untested = 'untested',
   // Omit successful packages from the summary
   Successful = 'successful',
   // Omit the pie chart from the summary
@@ -80,7 +80,7 @@ function getDeprecatedOmitInputs(): OmitOption[] {
   if (omitUntestedPackages) {
     usedDeprecated.push('omitUntestedPackages')
     if (core.getBooleanInput('omitUntestedPackages')) {
-      omitOptions.push(OmitOption.Skipped)
+      omitOptions.push(OmitOption.Untested)
     }
   }
 

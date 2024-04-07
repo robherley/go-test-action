@@ -76,7 +76,7 @@ describe('renderer', () => {
 
     const inputs = getInputs()
     expect(inputs.omit).toEqual(
-      new Set([OmitOption.Skipped, OmitOption.Successful, OmitOption.Pie])
+      new Set([OmitOption.Untested, OmitOption.Successful, OmitOption.Pie])
     )
     expect(core.warning).toHaveBeenCalled()
   })
