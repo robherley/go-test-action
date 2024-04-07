@@ -3,6 +3,7 @@ import type { SummaryTableRow } from '@actions/core/lib/summary'
 
 import type { ConclusionResults } from './results'
 import PackageResult from './results'
+import { OmitOption } from './inputs'
 
 import type {
   TestEvent,
@@ -15,9 +16,7 @@ class Renderer {
   moduleName: string | null
   testEvents: TestEvent[]
   stderr: string
-  omitUntestedPackages: boolean
-  omitSuccessfulPackages: boolean
-  omitPie: boolean
+  omit: Set<OmitOption>
   packageResults: PackageResult[]
   headers: SummaryTableRow = [
     { data: '📦 Package', header: true },
@@ -36,16 +35,12 @@ class Renderer {
     moduleName: string | null,
     testEvents: TestEvent[],
     stderr: string,
-    omitUntestedPackages: boolean,
-    omitSuccessfulPackages: boolean,
-    omitPie: boolean
+    omit: Set<OmitOption>
   ) {
     this.moduleName = moduleName
     this.testEvents = testEvents
     this.stderr = stderr
-    this.omitUntestedPackages = omitUntestedPackages
-    this.omitSuccessfulPackages = omitSuccessfulPackages
-    this.omitPie = omitPie
+    this.omit = omit
     this.packageResults = this.calculatePackageResults()
   }
 
@@ -55,9 +50,13 @@ class Renderer {
    */
   async writeSummary() {
     const resultsToRender = this.packageResults
-      .filter(result => (this.omitUntestedPackages ? result.hasTests() : true))
       .filter(result =>
-        this.omitSuccessfulPackages ? result.justSuccessfulTests() : true
+        this.omit.has(OmitOption.Untested) ? result.hasTests() : true
+      )
+      .filter(result =>
+        this.omit.has(OmitOption.Successful)
+          ? result.onlySuccessfulTests()
+          : true
       )
 
     if (resultsToRender.length === 0) {
@@ -182,13 +181,19 @@ class Renderer {
       testList += '</ul>'
     }
 
-    const detailsForOutput = `<details><summary>🖨️ Output</summary><pre><code>${
-      packageResult.output() || '(none)'
-    }</code></pre></details>`
+    let details = ''
 
-    const detailsForTests = `<details><summary>🧪 Tests</summary>${
-      testList || '(none)'
-    }</details>`
+    if (!this.omit.has(OmitOption.PackageTests)) {
+      details += `<details><summary>🧪 Tests</summary>${
+        testList || '(none)'
+      }</details>`
+    }
+
+    if (!this.omit.has(OmitOption.PackageOutput)) {
+      details += `<details><summary>🖨️ Output</summary><pre><code>${
+        packageResult.output() || '(none)'
+      }</code></pre></details>`
+    }
 
     const pkgName = `${this.emojiFor(
       packageResult.packageEvent.action
@@ -196,7 +201,7 @@ class Renderer {
       packageResult.packageEvent.package === this.moduleName ? ' (main)' : ''
     }</code>`
 
-    return [
+    const packageRows: SummaryTableRow[] = [
       [
         pkgName,
         packageResult.conclusions.pass.toString(),
@@ -204,8 +209,13 @@ class Renderer {
         packageResult.conclusions.skip.toString(),
         `${(packageResult.packageEvent.elapsed || 0) * 1000}ms`,
       ],
-      [{ data: detailsForTests + detailsForOutput, colspan: '5' }],
     ]
+
+    if (details) {
+      packageRows.push([{ data: details, colspan: '5' }])
+    }
+
+    return packageRows
   }
 
   /**
@@ -213,7 +223,7 @@ class Renderer {
    * @returns stringified markdown for mermaid.js pie chart
    */
   private renderPie(): string {
-    if (this.omitPie) {
+    if (this.omit.has(OmitOption.Pie)) {
       return '<br><br>' // just return double break instead
     }
 
@@ -257,8 +267,11 @@ ${pieData}
   }
 
   private renderStderr(): string {
-    return this.stderr
-      ? `<details>
+    if (this.omit.has(OmitOption.Stderr) || !this.stderr) {
+      return ''
+    }
+
+    return `<details>
 <summary>🚨 Standard Error Output</summary>
 
 \`\`\`
@@ -266,7 +279,6 @@ ${this.stderr}
 \`\`\`
 
 </details>`
-      : ''
   }
 }
 

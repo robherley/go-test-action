@@ -35,8 +35,7 @@ export const removeSummaryFile = async () => {
 export const setupActionsInputs = () => {
   process.env['INPUT_MODULEDIRECTORY'] = testModuleDirectory
   process.env['INPUT_TESTARGUMENTS'] = testArguments
-  process.env['INPUT_OMITUNTESTEDPACKAGES'] = 'false'
-  process.env['INPUT_OMITPIE'] = 'false'
+  process.env['INPUT_OMIT'] = ''
 }
 
 export const createFakeGoModule = async () => {

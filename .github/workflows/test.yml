@@ -1,8 +1,6 @@
 name: test
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -17,3 +15,14 @@ jobs:
         node-version: 20
     - run: npm ci
     - run: npm test
+    - run: npm run build
+    - name: check dist
+      run: |
+        changed_files_count=$(git status --porcelain | wc -l)
+        if [ $changed_files_count -ne 0 ]; then
+          echo 'mismatched files from ncc generation! did you forget to run `npm run build`?' | tee -a $GITHUB_STEP_SUMMARY
+          echo '```diff' >> $GITHUB_STEP_SUMMARY
+          git diff >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          exit 1
+        fi

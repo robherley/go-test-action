@@ -23,32 +23,6 @@ describe('runner', () => {
     setupActionsInputs()
   })
 
-  it("sets defaults if inputs aren't set", async () => {
-    delete process.env['INPUT_MODULEDIRECTORY']
-    delete process.env['INPUT_TESTARGUMENTS']
-    delete process.env['INPUT_OMITUNTESTEDPACKAGES']
-    delete process.env['INPUT_OMITPIE']
-
-    const runner = new Runner()
-    expect(runner.moduleDirectory).toBe('.')
-    expect(runner.testArguments).toEqual(['./...'])
-    expect(runner.omitUntestedPackages).toEqual(false)
-    expect(runner.omitPie).toEqual(false)
-  })
-
-  it('uses inputs if they are set', async () => {
-    process.env['INPUT_MODULEDIRECTORY'] = '/some/random/directory'
-    process.env['INPUT_TESTARGUMENTS'] = '-foo -bar\t-baz'
-    process.env['INPUT_OMITUNTESTEDPACKAGES'] = 'true'
-    process.env['INPUT_OMITPIE'] = 'true'
-
-    const runner = new Runner()
-    expect(runner.moduleDirectory).toBe('/some/random/directory')
-    expect(runner.testArguments).toEqual(['-foo', '-bar', '-baz'])
-    expect(runner.omitUntestedPackages).toEqual(true)
-    expect(runner.omitPie).toEqual(true)
-  })
-
   it('resolves module name from go.mod', async () => {
     const runner = new Runner()
     const modName = await runner.findModuleName()

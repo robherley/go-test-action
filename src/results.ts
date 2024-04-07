@@ -35,7 +35,7 @@ class PackageResult {
     return this.testCount() !== 0
   }
 
-  public justSuccessfulTests(): boolean {
+  public onlySuccessfulTests(): boolean {
     return this.conclusions.pass === 0 && this.conclusions.fail === 0
   }
 
