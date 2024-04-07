@@ -78,24 +78,24 @@ function getDeprecatedOmitInputs(): OmitOption[] {
 
   const omitUntestedPackages = core.getInput('omitUntestedPackages')
   if (omitUntestedPackages) {
-    usedDeprecated.push('omitUntestedPackages')
     if (core.getBooleanInput('omitUntestedPackages')) {
+      usedDeprecated.push('omitUntestedPackages')
       omitOptions.push(OmitOption.Untested)
     }
   }
 
   const omitSuccessfulPackages = core.getInput('omitSuccessfulPackages')
   if (omitSuccessfulPackages) {
-    usedDeprecated.push('omitSuccessfulPackages')
     if (core.getBooleanInput('omitSuccessfulPackages')) {
+      usedDeprecated.push('omitSuccessfulPackages')
       omitOptions.push(OmitOption.Successful)
     }
   }
 
   const omitPie = core.getInput('omitPie')
   if (omitPie) {
-    usedDeprecated.push('omitPie')
     if (core.getBooleanInput('omitPie')) {
+      usedDeprecated.push('omitPie')
       omitOptions.push(OmitOption.Pie)
     }
   }
