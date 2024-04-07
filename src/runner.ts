@@ -14,6 +14,7 @@ class Runner {
   omitUntestedPackages = false
   omitSuccessfulPackages = false
   omitPie = false
+  fromJSONFile: string | null = null
 
   constructor() {
     this.getInputs()
@@ -25,25 +26,43 @@ class Runner {
   async run() {
     const moduleName = await this.findModuleName()
 
-    const { retCode, stdout, stderr } = await this.goTest()
-    if (retCode > 0) {
-      core.error(`\`go test\` returned nonzero exit code: ${retCode}`)
+    if (this.fromJSONFile) {
+      const stdout = await readFile(this.fromJSONFile)
+      const testEvents = parseTestEvents(stdout.toString())
+
+      const renderer = new Renderer(
+        moduleName,
+        testEvents,
+        '',
+        this.omitUntestedPackages,
+        this.omitSuccessfulPackages,
+        this.omitPie
+      )
+  
+      await renderer.writeSummary()
+  
+      process.exit(0)
+    } else {
+      const { retCode, stdout, stderr } = await this.goTest()
+      if (retCode > 0) {
+        core.error(`\`go test\` returned nonzero exit code: ${retCode}`)
+      }
+
+      const testEvents = parseTestEvents(stdout)
+
+      const renderer = new Renderer(
+        moduleName,
+        testEvents,
+        stderr,
+        this.omitUntestedPackages,
+        this.omitSuccessfulPackages,
+        this.omitPie
+      )
+  
+      await renderer.writeSummary()
+  
+      process.exit(retCode)
     }
-
-    const testEvents = parseTestEvents(stdout)
-
-    const renderer = new Renderer(
-      moduleName,
-      testEvents,
-      stderr,
-      this.omitUntestedPackages,
-      this.omitSuccessfulPackages,
-      this.omitPie
-    )
-
-    await renderer.writeSummary()
-
-    process.exit(retCode)
   }
 
   /**
@@ -133,6 +152,11 @@ class Runner {
     const omitPie = core.getInput('omitPie')
     if (omitPie) {
       this.omitPie = core.getBooleanInput('omitPie')
+    }
+
+    const fromJSONFile = core.getInput('fromJSONFile')
+    if (fromJSONFile) {
+      this.fromJSONFile = fromJSONFile
     }
   }
 }
