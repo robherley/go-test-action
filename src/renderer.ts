@@ -191,7 +191,7 @@ class Renderer {
 
     if (!this.omit.has(OmitOption.PackageOutput)) {
       details += `<details><summary>🖨️ Output</summary><pre><code>${
-        packageResult.output() || '(none)'
+        this.scrubAnsi(packageResult.output()) || '(none)'
       }</code></pre></details>`
     }
 
@@ -275,10 +275,14 @@ ${pieData}
 <summary>🚨 Standard Error Output</summary>
 
 \`\`\`
-${this.stderr}
+${this.scrubAnsi(this.stderr)}
 \`\`\`
 
 </details>`
+  }
+
+  private scrubAnsi(input: string): string {
+    return input.replace(/\x1b\[[0-9;]*[a-zA-Z]/g, '')
   }
 }
 
