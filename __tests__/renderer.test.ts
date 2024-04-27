@@ -291,7 +291,7 @@ describe('renderer', () => {
   it('scrubs ansi from test output', async () => {
     const renderer = await getRenderer()
     const placeholder = 'no-ansi-please'
-    renderer.packageResults[0].events[0].output = `\u001b[31m${placeholder}\u001b[0m`
+    renderer.packageResults[1].events[0].output = `\u001b[31m${placeholder}\u001b[0m`
     await renderer.writeSummary()
     const $ = await loadSummaryHTML()
 
