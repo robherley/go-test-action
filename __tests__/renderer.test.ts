@@ -271,4 +271,36 @@ describe('renderer', () => {
 
     expect($('summary:contains(🖨️ Output)')).toHaveLength(0)
   })
+
+  it('scrubs ansi from stderr', async () => {
+    const renderer = await getRenderer()
+    const placeholder = 'no-ansi-please'
+    renderer.stderr = `\u001b[31m${placeholder}\u001b[0m`
+    await renderer.writeSummary()
+    const $ = await loadSummaryHTML()
+
+    expect($(`details:contains(${placeholder})`)).toHaveLength(1)
+    $(`details:contains(${placeholder})`).each((_, el) => {
+      const text = $(el).text()
+      if (text.includes(placeholder)) {
+        expect(text).not.toContain('\u001b')
+      }
+    })
+  })
+
+  it('scrubs ansi from test output', async () => {
+    const renderer = await getRenderer()
+    const placeholder = 'no-ansi-please'
+    renderer.packageResults[0].events[0].output = `\u001b[31m${placeholder}\u001b[0m`
+    await renderer.writeSummary()
+    const $ = await loadSummaryHTML()
+
+    expect($(`details:contains(${placeholder})`)).toHaveLength(1)
+    $(`details:contains(${placeholder})`).each((_, el) => {
+      const text = $(el).text()
+      if (text.includes(placeholder)) {
+        expect(text).not.toContain('\u001b')
+      }
+    })
+  })
 })
