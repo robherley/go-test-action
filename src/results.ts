@@ -36,7 +36,7 @@ class PackageResult {
   }
 
   public onlySuccessfulTests(): boolean {
-    return this.conclusions.pass === 0 && this.conclusions.fail === 0
+    return this.conclusions.skip === 0 && this.conclusions.fail === 0
   }
 
   public output(): string {
