@@ -11,18 +11,18 @@
   "author": "Rob Herley <robherley13@gmail.com> (https://reb.gg)",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^1.9.0",
+    "@actions/core": "^1.11.1",
     "@actions/exec": "^1.1.1",
     "@actions/glob": "^0.5.0"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.12",
-    "@types/node": "^22.5.4",
-    "@vercel/ncc": "^0.38.1",
+    "@types/jest": "^29.5.13",
+    "@types/node": "^22.7.4",
+    "@vercel/ncc": "^0.38.2",
     "cheerio": "^1.0.0",
     "jest": "^29.7.0",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
-    "typescript": "^5.5.4"
+    "typescript": "^5.6.2"
   }
 }
