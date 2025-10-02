@@ -55,7 +55,7 @@ class Renderer {
       )
       .filter(result =>
         this.omit.has(OmitOption.Successful)
-          ? result.onlySuccessfulTests()
+          ? !result.onlySuccessfulTests()
           : true
       )
 
