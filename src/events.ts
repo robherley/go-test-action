@@ -55,7 +55,7 @@ export function parseTestEvents(stdout: string): TestEvent[] {
       // Parse coverage percentage from output
       let coverage: number | undefined
       if (json.Output) {
-        const coverageMatch = json.Output.match(/coverage:\s+([\d.]+)%\s+of\s+statements/)
+        const coverageMatch = json.Output.match(/coverage:\s*(\d+(?:\.\d+)?)%\s+of\s+statements/)
         if (coverageMatch) {
           coverage = parseFloat(coverageMatch[1])
         }

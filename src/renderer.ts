@@ -18,7 +18,7 @@ class Renderer {
   stderr: string
   omit: Set<OmitOption>
   packageResults: PackageResult[]
-  hasCoverage: boolean = false
+  private hasCoverage: boolean = false
   headers: SummaryTableRow = [
     { data: '📦 Package', header: true },
     { data: '🟢 Passed', header: true },
