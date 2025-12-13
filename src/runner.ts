@@ -1,5 +1,6 @@
 import * as path from 'path'
 import { readFile } from 'fs/promises'
+import { Writable } from 'stream'
 
 import * as core from '@actions/core'
 import { exec } from '@actions/exec'
@@ -88,24 +89,51 @@ class Runner {
   }> {
     let stdout = ''
     let stderr = ''
+    let buf = ''
 
-    const opts = {
-      cwd: this.inputs.moduleDirectory,
-      ignoreReturnCode: true,
-      listeners: {
-        stdout: (data: Buffer) => {
-          stdout += data.toString()
-        },
-        stderr: (data: Buffer) => {
-          stderr += data.toString()
-        },
+    const outStream = new Writable({
+      write(chunk, _, cb) {
+        const output = chunk.toString('utf8')
+        stdout += output
+        buf += output
+
+        const lines = buf.split('\n')
+        buf = lines.pop() || ''
+
+        for (const line of lines) {
+          if (line) {
+            try {
+              const parsed = JSON.parse(line)
+              if (parsed.Output) {
+                process.stdout.write(parsed.Output)
+              }
+            } catch (_) {
+              process.stdout.write(line + '\n')
+            }
+          }
+        }
+        cb()
       },
-    }
+    })
+
+    const errStream = new Writable({
+      write(chunk, _, cb) {
+        const output = chunk.toString('utf8')
+        stderr += output
+        process.stderr.write(output + '\n')
+        cb()
+      },
+    })
 
     const retCode = await exec(
       'go',
       ['test', '-json', ...this.inputs.testArguments],
-      opts
+      {
+        cwd: this.inputs.moduleDirectory,
+        ignoreReturnCode: true,
+        outStream,
+        errStream,
+      }
     )
 
     return {
