@@ -65,7 +65,7 @@ describe('runner', () => {
       })
     )
 
-    expect(spyExit).toBeCalledWith(0)
+    expect(spyExit).toHaveBeenCalledWith(0)
   })
 
   it('exits the process with non-zero exit code on failure', async () => {
@@ -80,6 +80,6 @@ describe('runner', () => {
     const runner = new Runner()
     await runner.run()
 
-    expect(spyExit).toBeCalledWith(2)
+    expect(spyExit).toHaveBeenCalledWith(2)
   })
 })
