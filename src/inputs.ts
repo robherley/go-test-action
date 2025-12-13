@@ -5,6 +5,7 @@ export interface Inputs {
   testArguments: string[]
   fromJSONFile: string | null
   omit: Set<OmitOption>
+  coverprofile: string | null
 }
 
 export enum OmitOption {
@@ -27,6 +28,7 @@ export const defaultInputs = (): Inputs => ({
   testArguments: ['./...'],
   fromJSONFile: null,
   omit: new Set(),
+  coverprofile: null,
 })
 
 /**
@@ -63,6 +65,11 @@ export function getInputs(): Inputs {
         Object.values(OmitOption).includes(option as OmitOption)
       )
       .forEach(option => inputs.omit.add(option as OmitOption))
+  }
+
+  const coverprofile = core.getInput('coverprofile')
+  if (coverprofile) {
+    inputs.coverprofile = coverprofile
   }
 
   return inputs

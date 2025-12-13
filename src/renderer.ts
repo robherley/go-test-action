@@ -18,6 +18,7 @@ class Renderer {
   stderr: string
   omit: Set<OmitOption>
   packageResults: PackageResult[]
+  hasCoverage: boolean = false
   headers: SummaryTableRow = [
     { data: '📦 Package', header: true },
     { data: '🟢 Passed', header: true },
@@ -42,6 +43,7 @@ class Renderer {
     this.stderr = stderr
     this.omit = omit
     this.packageResults = this.calculatePackageResults()
+    this.setupHeaders()
   }
 
   /**
@@ -71,6 +73,20 @@ class Renderer {
       .addTable(rows)
       .addRaw(this.renderStderr())
       .write()
+  }
+
+  /**
+   * Setup table headers based on whether coverage data is available
+   */
+  private setupHeaders() {
+    // Check if any package has coverage data
+    this.hasCoverage = this.packageResults.some(
+      result => result.coverage !== undefined
+    )
+
+    if (this.hasCoverage) {
+      this.headers.push({ data: '📊 Coverage', header: true })
+    }
   }
 
   /**
@@ -211,18 +227,27 @@ class Renderer {
       packageResult.packageEvent.package === this.moduleName ? ' (main)' : ''
     }</code>`
 
-    const packageRows: SummaryTableRow[] = [
-      [
-        pkgName,
-        packageResult.conclusions.pass.toString(),
-        packageResult.conclusions.fail.toString(),
-        packageResult.conclusions.skip.toString(),
-        `${(packageResult.packageEvent.elapsed || 0) * 1000}ms`,
-      ],
+    const baseRow = [
+      pkgName,
+      packageResult.conclusions.pass.toString(),
+      packageResult.conclusions.fail.toString(),
+      packageResult.conclusions.skip.toString(),
+      `${(packageResult.packageEvent.elapsed || 0) * 1000}ms`,
     ]
 
+    if (this.hasCoverage) {
+      baseRow.push(
+        packageResult.coverage !== undefined
+          ? `${packageResult.coverage.toFixed(1)}%`
+          : 'N/A'
+      )
+    }
+
+    const packageRows: SummaryTableRow[] = [baseRow]
+
     if (details) {
-      packageRows.push([{ data: details, colspan: '5' }])
+      const colspan = this.hasCoverage ? '6' : '5'
+      packageRows.push([{ data: details, colspan }])
     }
 
     return packageRows

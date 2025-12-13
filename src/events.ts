@@ -36,6 +36,7 @@ export interface TestEvent {
   isPackageLevel: boolean
   isConclusive: boolean
   isCached: boolean
+  coverage?: number // percentage (e.g., 50.0 for 50.0%)
 }
 
 /**
@@ -50,6 +51,16 @@ export function parseTestEvents(stdout: string): TestEvent[] {
   for (let line of lines) {
     try {
       const json = JSON.parse(line)
+      
+      // Parse coverage percentage from output
+      let coverage: number | undefined
+      if (json.Output) {
+        const coverageMatch = json.Output.match(/coverage:\s+([\d.]+)%\s+of\s+statements/)
+        if (coverageMatch) {
+          coverage = parseFloat(coverageMatch[1])
+        }
+      }
+      
       events.push({
         time: json.Time && new Date(json.Time),
         action: json.Action as TestEventAction,
@@ -61,6 +72,7 @@ export function parseTestEvents(stdout: string): TestEvent[] {
         isSubtest: json.Test?.includes('/') || false, // afaik there isn't a better indicator in test2json
         isPackageLevel: typeof json.Test === 'undefined',
         isConclusive: conclusiveTestEvents.includes(json.Action),
+        coverage,
       })
     } catch {
       core.debug(`unable to parse line: ${line}`)

@@ -89,4 +89,18 @@ describe('events', () => {
     const otherTestEvents = parseTestEvents(otherStdout)
     expect(otherTestEvents[0]).toHaveProperty('isCached', false)
   })
+
+  it('correctly parses coverage percentage', () => {
+    const coverageStdout =
+      '{"Time":"2025-12-13T04:41:53.511365498Z","Action":"output","Package":"example.com/test","Output":"coverage: 50.0% of statements\\n"}'
+
+    const coverageEvents = parseTestEvents(coverageStdout)
+    expect(coverageEvents[0]).toHaveProperty('coverage', 50.0)
+
+    const noCoverageStdout =
+      '{"Time":"2022-07-10T22:42:11.931552-04:00","Action":"output","Package":"github.com/robherley/go-test-example/success","Output":"ok  \\tgithub.com/robherley/go-test-example/success\\n"}'
+
+    const noCoverageEvents = parseTestEvents(noCoverageStdout)
+    expect(noCoverageEvents[0]).toHaveProperty('coverage', undefined)
+  })
 })

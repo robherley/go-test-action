@@ -33,6 +33,9 @@ inputs:
     description: 'Omit any packages from summary output that are successful'
     required: false
     default: 'false'
+  coverprofile:
+    description: 'Generate coverage profile and display coverage percentage. Specify the coverage file path (e.g., "coverage.out")'
+    required: false
 runs:
   using: 'node20'
   main: 'dist/index.js'

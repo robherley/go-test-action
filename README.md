@@ -48,6 +48,12 @@ Powered by [Job Summaries](https://github.blog/2022-05-09-supercharging-github-a
     #  stderr: standard error output of `go test` subprocess
     # Optional. No default
     omit:
+
+    # Generate coverage profile and display coverage percentage.
+    # Specify the coverage file path (e.g., "coverage.out").
+    # When set, coverage percentages will be displayed in the summary table.
+    # Optional. No default
+    coverprofile:
 ```
 
 ## Screenshots
@@ -95,6 +101,15 @@ jobs:
   uses: robherley/go-test-action@v0
   with:
     fromJSONFile: /path/to/test2json.json
+```
+
+### With coverage
+
+```yaml
+- name: Test
+  uses: robherley/go-test-action@v0
+  with:
+    coverprofile: coverage.out
 ```
 
 ### Omitting elements

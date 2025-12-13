@@ -26,6 +26,7 @@ describe('renderer', () => {
       testArguments: ['./...'],
       fromJSONFile: null,
       omit: new Set(),
+      coverprofile: null,
     })
   })
 
@@ -48,6 +49,13 @@ describe('renderer', () => {
     const inputs = getInputs()
 
     expect(inputs.fromJSONFile).toEqual('foo.json')
+  })
+
+  it('parses coverprofile', () => {
+    mockInput('coverprofile', 'coverage.out')
+    const inputs = getInputs()
+
+    expect(inputs.coverprofile).toEqual('coverage.out')
   })
 
   it('parses omit', () => {

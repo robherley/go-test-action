@@ -17,6 +17,7 @@ class PackageResult {
     fail: 0,
     skip: 0,
   }
+  coverage?: number
 
   constructor(packageEvent: TestEvent, events: TestEvent[]) {
     this.packageEvent = packageEvent
@@ -25,6 +26,7 @@ class PackageResult {
     )
 
     this.eventsToResults()
+    this.extractCoverage()
   }
 
   public testCount(): number {
@@ -72,6 +74,15 @@ class PackageResult {
           subtests: this.tests[event.test]?.subtests || {},
         }
       }
+    }
+  }
+
+  /**
+   * Extract coverage percentage from package-level event
+   */
+  private extractCoverage() {
+    if (this.packageEvent.coverage !== undefined) {
+      this.coverage = this.packageEvent.coverage
     }
   }
 }

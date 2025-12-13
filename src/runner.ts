@@ -125,9 +125,17 @@ class Runner {
       },
     })
 
+    const testArgs = ['-json']
+    
+    if (this.inputs.coverprofile) {
+      testArgs.push('-coverprofile', this.inputs.coverprofile)
+    }
+    
+    testArgs.push(...this.inputs.testArguments)
+
     const retCode = await exec(
       'go',
-      ['test', '-json', ...this.inputs.testArguments],
+      ['test', ...testArgs],
       {
         cwd: this.inputs.moduleDirectory,
         ignoreReturnCode: true,

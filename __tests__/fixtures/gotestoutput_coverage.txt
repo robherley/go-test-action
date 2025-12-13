@@ -1,0 +1,9 @@
+{"Time":"2025-12-13T04:41:53.509319636Z","Action":"start","Package":"example.com/test"}
+{"Time":"2025-12-13T04:41:53.510906756Z","Action":"run","Package":"example.com/test","Test":"TestAdd"}
+{"Time":"2025-12-13T04:41:53.510923518Z","Action":"output","Package":"example.com/test","Test":"TestAdd","Output":"=== RUN   TestAdd\n"}
+{"Time":"2025-12-13T04:41:53.510972229Z","Action":"output","Package":"example.com/test","Test":"TestAdd","Output":"--- PASS: TestAdd (0.00s)\n"}
+{"Time":"2025-12-13T04:41:53.510985845Z","Action":"pass","Package":"example.com/test","Test":"TestAdd","Elapsed":0}
+{"Time":"2025-12-13T04:41:53.510994671Z","Action":"output","Package":"example.com/test","Output":"PASS\n"}
+{"Time":"2025-12-13T04:41:53.511365498Z","Action":"output","Package":"example.com/test","Output":"coverage: 50.0% of statements\n"}
+{"Time":"2025-12-13T04:41:53.511714866Z","Action":"output","Package":"example.com/test","Output":"ok  \texample.com/test\t0.002s\tcoverage: 50.0% of statements\n"}
+{"Time":"2025-12-13T04:41:53.511732649Z","Action":"pass","Package":"example.com/test","Elapsed":0.002}
