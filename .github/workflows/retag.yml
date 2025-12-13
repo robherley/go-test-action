@@ -1,0 +1,38 @@
+name: retag
+
+on:
+  release:
+    types: [published]
+
+permissions: {}
+
+jobs:
+  retag:
+    name: retag major version
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: get major version
+        id: version
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Tag $TAG does not match semver pattern vX.Y.Z, skipping"
+            echo "skip=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          MAJOR=$(echo "$TAG" | cut -d. -f1)
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "major=$MAJOR" >> $GITHUB_OUTPUT
+          echo "skip=false" >> $GITHUB_OUTPUT
+
+      - name: push major version tag
+        if: steps.version.outputs.skip == 'false'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -fa ${{ steps.version.outputs.major }} -m "Release ${{ steps.version.outputs.tag }}"
+          git push origin ${{ steps.version.outputs.major }} --force

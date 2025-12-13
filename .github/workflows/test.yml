@@ -2,27 +2,32 @@ name: test
 
 on:
   pull_request:
-    branches: [ main ]
+
+permissions:
+  contents: read
 
 jobs:
   jest:
     name: jest
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v6
-    - uses: actions/setup-node@v6
-      with:
-        node-version: 20
-    - run: npm ci
-    - run: npm test
-    - run: npm run build
-    - name: check dist
-      run: |
-        changed_files_count=$(git status --porcelain | wc -l)
-        if [ $changed_files_count -ne 0 ]; then
-          echo 'mismatched files from ncc generation! did you forget to run `npm run build`?' | tee -a $GITHUB_STEP_SUMMARY
-          echo '```diff' >> $GITHUB_STEP_SUMMARY
-          git diff >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          exit 1
-        fi
+      - uses: actions/checkout@v6
+      - name: node version from action.yml
+        id: node-version
+        run: echo "version=$(grep 'using:' action.yml | sed "s/.*node\([0-9]*\).*/\1/")" >> $GITHUB_OUTPUT
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ steps.node-version.outputs.version }}
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - name: check dist
+        run: |
+          changed_files_count=$(git status --porcelain | wc -l)
+          if [ $changed_files_count -ne 0 ]; then
+            echo 'mismatched files from ncc generation! did you forget to run `npm run build`?' | tee -a $GITHUB_STEP_SUMMARY
+            echo '```diff' >> $GITHUB_STEP_SUMMARY
+            git diff >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
