@@ -216,6 +216,52 @@ describe('renderer', () => {
     expect($('tr')).toHaveLength(5)
   })
 
+  describe('filterPackageResults', () => {
+    it('returns all package results when no omit options are set', async () => {
+      const renderer = await getRenderer()
+      const filtered = (renderer as any).filterPackageResults()
+
+      expect(filtered).toHaveLength(4)
+      expect(filtered).toEqual(renderer.packageResults)
+    })
+
+    it('filters out untested packages when Untested option is set', async () => {
+      const renderer = await getRenderer()
+      renderer.omit.add(OmitOption.Untested)
+      const filtered = (renderer as any).filterPackageResults()
+
+      expect(filtered).toHaveLength(3)
+      filtered.forEach((result: any) => {
+        expect(result.hasTests()).toBe(true)
+      })
+    })
+
+    it('filters out successful packages when Successful option is set', async () => {
+      const renderer = await getRenderer()
+      renderer.omit.add(OmitOption.Successful)
+      const filtered = (renderer as any).filterPackageResults()
+
+      expect(filtered).toHaveLength(2)
+      filtered.forEach((result: any) => {
+        expect(result.onlySuccessfulTests()).toBe(false)
+      })
+    })
+
+    it('applies both filters when both options are set', async () => {
+      const renderer = await getRenderer()
+      renderer.omit.add(OmitOption.Untested)
+      renderer.omit.add(OmitOption.Successful)
+      const filtered = (renderer as any).filterPackageResults()
+
+      // Only 'boom' (failed tests) and 'skipme' (skipped test) should remain
+      expect(filtered).toHaveLength(2)
+      filtered.forEach((result: any) => {
+        expect(result.hasTests()).toBe(true)
+        expect(result.onlySuccessfulTests()).toBe(false)
+      })
+    })
+  })
+
   it('does not render stderr when empty', async () => {
     const renderer = await getRenderer()
     renderer.stderr = ''

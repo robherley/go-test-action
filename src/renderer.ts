@@ -49,15 +49,7 @@ class Renderer {
    * https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#adding-a-job-summary
    */
   async writeSummary() {
-    const resultsToRender = this.packageResults
-      .filter(result =>
-        this.omit.has(OmitOption.Untested) ? result.hasTests() : true
-      )
-      .filter(result =>
-        this.omit.has(OmitOption.Successful)
-          ? !result.onlySuccessfulTests()
-          : true
-      )
+    const resultsToRender = this.filterPackageResults()
 
     if (resultsToRender.length === 0) {
       core.debug('no packages with tests, skipping render')
@@ -79,6 +71,24 @@ class Renderer {
       .addRaw('</div>')
       .addRaw(this.renderStderr())
       .write()
+  }
+
+  /**
+   * Filters package results based on omit options
+   * @returns filtered package results to render
+   */
+  private filterPackageResults(): PackageResult[] {
+    let results = this.packageResults
+
+    if (this.omit.has(OmitOption.Untested)) {
+      results = results.filter(result => result.hasTests())
+    }
+
+    if (this.omit.has(OmitOption.Successful)) {
+      results = results.filter(result => !result.onlySuccessfulTests())
+    }
+
+    return results
   }
 
   /**
