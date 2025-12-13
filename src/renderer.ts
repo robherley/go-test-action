@@ -67,8 +67,8 @@ class Renderer {
       .addRaw(`<h3><code>${this.moduleName || 'go test'}</code></h3>`)
       .addRaw(this.renderSummaryText())
       .addRaw(this.renderPie())
-      .addTable(rows)
       .addRaw('</div>')
+      .addTable(rows)
       .addRaw(this.renderStderr())
       .write()
   }
