@@ -11,13 +11,13 @@
   "author": "Rob Herley <robherley13@gmail.com> (https://reb.gg)",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^2.0.0",
+    "@actions/core": "^2.0.2",
     "@actions/exec": "^2.0.0",
     "@actions/glob": "^0.5.0"
   },
   "devDependencies": {
     "@types/jest": "^30.0.0",
-    "@types/node": "^25.0.0",
+    "@types/node": "^25.0.6",
     "@vercel/ncc": "^0.38.4",
     "cheerio": "^1.1.2",
     "jest": "^30.2.0",
