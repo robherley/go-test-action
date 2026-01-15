@@ -68,6 +68,34 @@ describe('runner', () => {
     expect(spyExit).toHaveBeenCalledWith(0)
   })
 
+  it('invokes exec with -C flag when workingDirectory is specified', async () => {
+    const spyExit = mockProcessExit()
+
+    jest
+      .spyOn(Renderer.prototype, 'writeSummary')
+      .mockImplementationOnce(async () => {})
+
+    const spy = jest
+      .spyOn(actionsExec, 'exec')
+      .mockImplementationOnce(async () => 0)
+
+    process.env['INPUT_WORKINGDIRECTORY'] = 'subdir'
+
+    const runner = new Runner()
+    await runner.run()
+
+    expect(spy).toHaveBeenCalledWith(
+      'go',
+      ['test', '-C', 'subdir', '-json', './...'],
+      expect.objectContaining({
+        cwd: testModuleDirectory,
+        ignoreReturnCode: true,
+      })
+    )
+
+    expect(spyExit).toHaveBeenCalledWith(0)
+  })
+
   it('exits the process with non-zero exit code on failure', async () => {
     const spyExit = mockProcessExit()
 

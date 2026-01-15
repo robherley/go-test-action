@@ -2,6 +2,7 @@ import * as core from '@actions/core'
 
 export interface Inputs {
   moduleDirectory: string
+  workingDirectory: string | null
   testArguments: string[]
   fromJSONFile: string | null
   omit: Set<OmitOption>
@@ -24,6 +25,7 @@ export enum OmitOption {
 
 export const defaultInputs = (): Inputs => ({
   moduleDirectory: '.',
+  workingDirectory: null,
   testArguments: ['./...'],
   fromJSONFile: null,
   omit: new Set(),
@@ -43,6 +45,11 @@ export function getInputs(): Inputs {
   const moduleDirectory = core.getInput('moduleDirectory')
   if (moduleDirectory) {
     inputs.moduleDirectory = moduleDirectory
+  }
+
+  const workingDirectory = core.getInput('workingDirectory')
+  if (workingDirectory) {
+    inputs.workingDirectory = workingDirectory
   }
 
   const testArguments = core.getInput('testArguments')

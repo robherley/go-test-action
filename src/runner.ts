@@ -125,16 +125,18 @@ class Runner {
       },
     })
 
-    const retCode = await exec(
-      'go',
-      ['test', '-json', ...this.inputs.testArguments],
-      {
-        cwd: this.inputs.moduleDirectory,
-        ignoreReturnCode: true,
-        outStream,
-        errStream,
-      }
-    )
+    const args = ['test']
+    if (this.inputs.workingDirectory) {
+      args.push('-C', this.inputs.workingDirectory)
+    }
+    args.push('-json', ...this.inputs.testArguments)
+
+    const retCode = await exec('go', args, {
+      cwd: this.inputs.moduleDirectory,
+      ignoreReturnCode: true,
+      outStream,
+      errStream,
+    })
 
     return {
       retCode,

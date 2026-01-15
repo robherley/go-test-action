@@ -8,6 +8,9 @@ inputs:
     description: 'Directory of go module to test'
     required: false
     default: '.'
+  workingDirectory:
+    description: 'Working directory for go test execution (prepends -C flag)'
+    required: false
   testArguments:
     description: 'Arguments to `go test`, `-json` will be prepended'
     required: false

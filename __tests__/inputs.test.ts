@@ -23,6 +23,7 @@ describe('renderer', () => {
 
     expect(inputs).toEqual({
       moduleDirectory: '.',
+      workingDirectory: null,
       testArguments: ['./...'],
       fromJSONFile: null,
       omit: new Set(),
@@ -34,6 +35,13 @@ describe('renderer', () => {
     const inputs = getInputs()
 
     expect(inputs.moduleDirectory).toEqual('foo')
+  })
+
+  it('parses workingDirectory', () => {
+    mockInput('workingDirectory', 'bar')
+    const inputs = getInputs()
+
+    expect(inputs.workingDirectory).toEqual('bar')
   })
 
   it('parses testArguments', () => {

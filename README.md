@@ -29,6 +29,10 @@ Powered by [Job Summaries](https://github.blog/2022-05-09-supercharging-github-a
     # Optional. Default is '.'
     moduleDirectory:
 
+    # Working directory for go test execution (prepends -C flag).
+    # Optional. No default
+    workingDirectory:
+
     # Arguments to pass to go test, -json will be prepended automatically.
     # Optional. Default is './...'
     testArguments:
