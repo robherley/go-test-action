@@ -38,6 +38,11 @@ Powered by [Job Summaries](https://github.blog/2022-05-09-supercharging-github-a
     # Optional. No default
     fromJSONFile:
 
+    # Parse multiple [test2json](https://pkg.go.dev/cmd/test2json) files (newline-separated) and generate a combined summary.
+    # Will always exit(0) on successful test file parse.
+    # Optional. No default
+    fromJSONFiles:
+
     # Whitespace separated list of renderable items to omit.
     # Valid options to omit are:
     #  untested: packages that have no tests
