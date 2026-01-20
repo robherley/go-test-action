@@ -4,6 +4,7 @@ export interface Inputs {
   moduleDirectory: string
   testArguments: string[]
   fromJSONFile: string | null
+  fromJSONFiles: string[] | null
   omit: Set<OmitOption>
 }
 
@@ -26,6 +27,7 @@ export const defaultInputs = (): Inputs => ({
   moduleDirectory: '.',
   testArguments: ['./...'],
   fromJSONFile: null,
+  fromJSONFiles: null,
   omit: new Set(),
 })
 
@@ -53,6 +55,14 @@ export function getInputs(): Inputs {
   const fromJSONFile = core.getInput('fromJSONFile')
   if (fromJSONFile) {
     inputs.fromJSONFile = fromJSONFile
+  }
+
+  const fromJSONFiles = core.getInput('fromJSONFiles')
+  if (fromJSONFiles) {
+    inputs.fromJSONFiles = fromJSONFiles
+      .split('\n')
+      .map(f => f.trim())
+      .filter(f => f.length > 0)
   }
 
   const omit = core.getInput('omit')
