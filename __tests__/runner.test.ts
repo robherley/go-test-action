@@ -10,7 +10,6 @@ import {
   testFixturesDirectory,
   mockProcessExit,
   createFakeGoModule,
-  mockActionsCoreLogging,
 } from './helpers.js'
 import Runner from '../src/runner.js'
 import Renderer from '../src/renderer.js'
@@ -21,7 +20,6 @@ describe('runner', () => {
   })
 
   beforeEach(() => {
-    mockActionsCoreLogging()
     setupActionsInputs()
     delete process.env['INPUT_FROMJSONFILE']
     delete process.env['INPUT_FROMJSONFILES']

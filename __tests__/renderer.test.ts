@@ -11,7 +11,6 @@ import * as cheerio from 'cheerio'
 
 import {
   getTestStdout,
-  mockActionsCoreLogging,
   createFakeGoModule,
   createSummaryFile,
   removeSummaryFile,
@@ -44,7 +43,6 @@ describe('renderer', () => {
   })
 
   beforeEach(async () => {
-    mockActionsCoreLogging()
     await createSummaryFile()
   })
 

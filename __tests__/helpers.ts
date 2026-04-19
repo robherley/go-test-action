@@ -65,6 +65,3 @@ export const getTestStdout = async (): Promise<string> => {
   return buf.toString()
 }
 
-export const mockActionsCoreLogging = () => {
-  // log methods are mocked module-wide via __tests__/setup.ts
-}
