@@ -1,0 +1,8 @@
+{"Time":"2022-07-10T22:42:11.933412-04:00","Action":"run","Package":"github.com/robherley/go-test-example/skipme","Test":"TestSkip"}
+{"Time":"2022-07-10T22:42:11.933502-04:00","Action":"output","Package":"github.com/robherley/go-test-example/skipme","Test":"TestSkip","Output":"=== RUN   TestSkip\n"}
+{"Time":"2022-07-10T22:42:11.933535-04:00","Action":"output","Package":"github.com/robherley/go-test-example/skipme","Test":"TestSkip","Output":"    skipme_test.go:6: skip me\n"}
+{"Time":"2022-07-10T22:42:11.933551-04:00","Action":"output","Package":"github.com/robherley/go-test-example/skipme","Test":"TestSkip","Output":"--- SKIP: TestSkip (0.00s)\n"}
+{"Time":"2022-07-10T22:42:11.933563-04:00","Action":"skip","Package":"github.com/robherley/go-test-example/skipme","Test":"TestSkip","Elapsed":0}
+{"Time":"2022-07-10T22:42:11.933575-04:00","Action":"output","Package":"github.com/robherley/go-test-example/skipme","Output":"PASS\n"}
+{"Time":"2022-07-10T22:42:11.933587-04:00","Action":"output","Package":"github.com/robherley/go-test-example/skipme","Output":"ok  \tgithub.com/robherley/go-test-example/skipme\t(cached)\n"}
+{"Time":"2022-07-10T22:42:11.9336-04:00","Action":"pass","Package":"github.com/robherley/go-test-example/skipme","Elapsed":0}

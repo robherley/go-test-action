@@ -1,6 +1,6 @@
 {
   "name": "go-test-action",
-  "version": "0.5.1",
+  "version": "0.5.0",
   "description": "GitHub Action to run go tests with rich summary output and annotations.",
   "main": "dist/index.js",
   "scripts": {
@@ -8,7 +8,7 @@
     "build": "ncc build -m -o dist src/index.ts",
     "test": "jest"
   },
-  "author": "Rob Herley <robherley13@gmail.com> (https://reb.gg)",
+  "author": "Rob Herley <me@reb.gg> (https://reb.gg)",
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^2.0.0",

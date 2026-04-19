@@ -3,7 +3,6 @@ import * as core from '@actions/core'
 export interface Inputs {
   moduleDirectory: string
   testArguments: string[]
-  fromJSONFile: string | null
   fromJSONFiles: string[] | null
   omit: Set<OmitOption>
 }
@@ -26,7 +25,6 @@ export enum OmitOption {
 export const defaultInputs = (): Inputs => ({
   moduleDirectory: '.',
   testArguments: ['./...'],
-  fromJSONFile: null,
   fromJSONFiles: null,
   omit: new Set(),
 })
@@ -53,11 +51,18 @@ export function getInputs(): Inputs {
   }
 
   const fromJSONFile = core.getInput('fromJSONFile')
-  if (fromJSONFile) {
-    inputs.fromJSONFile = fromJSONFile
+  const fromJSONFiles = core.getInput('fromJSONFiles')
+
+  if (fromJSONFile && fromJSONFiles) {
+    throw new Error(
+      'Cannot specify both fromJSONFile and fromJSONFiles. Use fromJSONFiles for multiple files.'
+    )
   }
 
-  const fromJSONFiles = core.getInput('fromJSONFiles')
+  if (fromJSONFile) {
+    inputs.fromJSONFiles = [fromJSONFile]
+  }
+
   if (fromJSONFiles) {
     inputs.fromJSONFiles = fromJSONFiles
       .split('\n')

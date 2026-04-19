@@ -38,19 +38,6 @@ class Runner {
 
       await renderer.writeSummary()
       process.exit(0)
-    } else if (this.inputs.fromJSONFile) {
-      const stdout = await readFile(this.inputs.fromJSONFile)
-      const testEvents = parseTestEvents(stdout.toString())
-
-      const renderer = new Renderer(
-        moduleName,
-        testEvents,
-        '',
-        this.inputs.omit
-      )
-
-      await renderer.writeSummary()
-      process.exit(0)
     } else {
       const { retCode, stdout, stderr } = await this.goTest()
       if (retCode > 0) {

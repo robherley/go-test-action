@@ -12,6 +12,10 @@ const mockInput = (name: string, value: string) => {
   mockGetInput.mockImplementation((n: string) => (n === name ? value : ''))
 }
 
+const mockInputs = (inputs: Record<string, string>) => {
+  mockGetInput.mockImplementation((n: string) => inputs[n] ?? '')
+}
+
 describe('renderer', () => {
   beforeEach(() => {
     jest.resetAllMocks()
@@ -24,7 +28,6 @@ describe('renderer', () => {
     expect(inputs).toEqual({
       moduleDirectory: '.',
       testArguments: ['./...'],
-      fromJSONFile: null,
       fromJSONFiles: null,
       omit: new Set(),
     })
@@ -44,11 +47,11 @@ describe('renderer', () => {
     expect(inputs.testArguments).toEqual(['foo', 'bar'])
   })
 
-  it('parses fromJSONFile', () => {
+  it('parses fromJSONFile as alias for fromJSONFiles', () => {
     mockInput('fromJSONFile', 'foo.json')
     const inputs = getInputs()
 
-    expect(inputs.fromJSONFile).toEqual('foo.json')
+    expect(inputs.fromJSONFiles).toEqual(['foo.json'])
   })
 
   it('parses fromJSONFiles', () => {
@@ -63,6 +66,17 @@ describe('renderer', () => {
     const inputs = getInputs()
 
     expect(inputs.fromJSONFiles).toEqual(['foo.json', 'bar.json'])
+  })
+
+  it('throws when both fromJSONFile and fromJSONFiles are set', () => {
+    mockInputs({
+      fromJSONFile: 'foo.json',
+      fromJSONFiles: 'bar.json\nbaz.json',
+    })
+
+    expect(() => getInputs()).toThrow(
+      'Cannot specify both fromJSONFile and fromJSONFiles'
+    )
   })
 
   it('parses omit', () => {

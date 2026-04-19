@@ -6,7 +6,7 @@
   - [Screenshots](#screenshots)
   - [Examples](#examples)
     - [Basic](#basic)
-    - [Using existing test file](#using-existing-test-file)
+    - [Using existing test files](#using-existing-test-files)
     - [Omitting elements](#omitting-elements)
 
 GitHub Action for running `go test ./...` and getting rich summary and annotations as output.
@@ -33,13 +33,9 @@ Powered by [Job Summaries](https://github.blog/2022-05-09-supercharging-github-a
     # Optional. Default is './...'
     testArguments:
 
-    # Parse an exisiting [test2json](https://pkg.go.dev/cmd/test2json) file, instead of executing go test.
+    # Parse one or more [test2json](https://pkg.go.dev/cmd/test2json) files (newline-separated) and generate a combined summary.
     # Will always exit(0) on successful test file parse.
-    # Optional. No default
-    fromJSONFile:
-
-    # Parse multiple [test2json](https://pkg.go.dev/cmd/test2json) files (newline-separated) and generate a combined summary.
-    # Will always exit(0) on successful test file parse.
+    # fromJSONFile is accepted as an alias for a single file.
     # Optional. No default
     fromJSONFiles:
 
@@ -93,13 +89,15 @@ jobs:
       uses: robherley/go-test-action@v0
 ```
 
-### Using existing test file
+### Using existing test files
 
 ```yaml
 - name: Test
   uses: robherley/go-test-action@v0
   with:
-    fromJSONFile: /path/to/test2json.json
+    fromJSONFiles: |
+      /path/to/pkg1-test2json.json
+      /path/to/pkg2-test2json.json
 ```
 
 ### Omitting elements
