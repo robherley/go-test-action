@@ -22,7 +22,23 @@ class Runner {
   async run() {
     const moduleName = await this.findModuleName()
 
-    if (this.inputs.fromJSONFile) {
+    if (this.inputs.fromJSONFiles) {
+      const contents = await Promise.all(
+        this.inputs.fromJSONFiles.map(file => readFile(file))
+      )
+      const stdout = contents.map(c => c.toString()).join('\n')
+      const testEvents = parseTestEvents(stdout)
+
+      const renderer = new Renderer(
+        moduleName,
+        testEvents,
+        '',
+        this.inputs.omit
+      )
+
+      await renderer.writeSummary()
+      process.exit(0)
+    } else if (this.inputs.fromJSONFile) {
       const stdout = await readFile(this.inputs.fromJSONFile)
       const testEvents = parseTestEvents(stdout.toString())
 

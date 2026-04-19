@@ -25,6 +25,7 @@ describe('renderer', () => {
       moduleDirectory: '.',
       testArguments: ['./...'],
       fromJSONFile: null,
+      fromJSONFiles: null,
       omit: new Set(),
     })
   })
@@ -48,6 +49,20 @@ describe('renderer', () => {
     const inputs = getInputs()
 
     expect(inputs.fromJSONFile).toEqual('foo.json')
+  })
+
+  it('parses fromJSONFiles', () => {
+    mockInput('fromJSONFiles', 'foo.json\nbar.json')
+    const inputs = getInputs()
+
+    expect(inputs.fromJSONFiles).toEqual(['foo.json', 'bar.json'])
+  })
+
+  it('trims whitespace and filters empty lines in fromJSONFiles', () => {
+    mockInput('fromJSONFiles', '  foo.json  \n\n  bar.json\n')
+    const inputs = getInputs()
+
+    expect(inputs.fromJSONFiles).toEqual(['foo.json', 'bar.json'])
   })
 
   it('parses omit', () => {
