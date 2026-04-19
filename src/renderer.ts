@@ -1,16 +1,25 @@
 import * as core from '@actions/core'
-import type { SummaryTableRow } from '@actions/core/lib/summary'
 
-import type { ConclusionResults } from './results'
-import PackageResult from './results'
-import { OmitOption } from './inputs'
+import type { ConclusionResults } from './results.js'
+
+export interface SummaryTableCell {
+  data: string
+  header?: boolean
+  colspan?: string
+  rowspan?: string
+}
+
+export type SummaryTableRow = (SummaryTableCell | string)[]
+
+import PackageResult from './results.js'
+import { OmitOption } from './inputs.js'
 
 import type {
   TestEvent,
   TestEventAction,
   TestEventActionConclusion,
-} from './events'
-import { conclusiveTestEvents } from './events'
+} from './events.js'
+import { conclusiveTestEvents } from './events.js'
 
 class Renderer {
   moduleName: string | null

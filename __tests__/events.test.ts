@@ -1,5 +1,6 @@
-import { getTestStdout, mockActionsCoreLogging } from './helpers'
-import { parseTestEvents } from '../src/events'
+import { beforeEach, describe, expect, it } from 'vitest'
+import { getTestStdout, mockActionsCoreLogging } from './helpers.js'
+import { parseTestEvents } from '../src/events.js'
 
 describe('events', () => {
   beforeEach(() => {

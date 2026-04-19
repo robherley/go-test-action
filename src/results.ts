@@ -1,4 +1,4 @@
-import type { TestEvent, TestEventActionConclusion } from './events'
+import type { TestEvent, TestEventActionConclusion } from './events.js'
 
 export type TestResults = { [testName: string]: TestResult }
 export type ConclusionResults = { [key in TestEventActionConclusion]: number }

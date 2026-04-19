@@ -5,9 +5,9 @@ import { Writable } from 'stream'
 import * as core from '@actions/core'
 import { exec } from '@actions/exec'
 
-import Renderer from './renderer'
-import { parseTestEvents } from './events'
-import { Inputs, getInputs } from './inputs'
+import Renderer from './renderer.js'
+import { parseTestEvents } from './events.js'
+import { Inputs, getInputs } from './inputs.js'
 
 class Runner {
   inputs: Inputs

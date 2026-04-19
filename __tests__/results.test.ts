@@ -1,6 +1,7 @@
-import { getTestStdout, mockActionsCoreLogging } from './helpers'
-import { TestEvent, parseTestEvents } from '../src/events'
-import PackageResult from '../src/results'
+import { beforeEach, describe, expect, it } from 'vitest'
+import { getTestStdout, mockActionsCoreLogging } from './helpers.js'
+import { TestEvent, parseTestEvents } from '../src/events.js'
+import PackageResult from '../src/results.js'
 
 const getPackageLevelEvent = (testEvents: TestEvent[]): TestEvent => {
   return testEvents.filter(
