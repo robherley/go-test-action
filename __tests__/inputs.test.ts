@@ -1,10 +1,11 @@
+import { beforeEach, describe, expect, it, vi, type MockedFunction } from 'vitest'
 import * as core from '@actions/core'
-import { OmitOption, getInputs } from '../src/inputs'
+import { OmitOption, getInputs } from '../src/inputs.js'
 
-jest.mock('@actions/core')
+vi.mock('@actions/core')
 
-const mockGetInput = core.getInput as jest.MockedFunction<typeof core.getInput>
-const mockGetBooleanInput = core.getBooleanInput as jest.MockedFunction<
+const mockGetInput = core.getInput as MockedFunction<typeof core.getInput>
+const mockGetBooleanInput = core.getBooleanInput as MockedFunction<
   typeof core.getBooleanInput
 >
 
@@ -18,7 +19,7 @@ const mockInputs = (inputs: Record<string, string>) => {
 
 describe('renderer', () => {
   beforeEach(() => {
-    jest.resetAllMocks()
+    vi.resetAllMocks()
   })
 
   it('uses default values', () => {

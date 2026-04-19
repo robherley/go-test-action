@@ -1,6 +1,7 @@
-import { getTestStdout, mockActionsCoreLogging } from './helpers'
-import { TestEvent, parseTestEvents } from '../src/events'
-import PackageResult from '../src/results'
+import { describe, expect, it } from 'vitest'
+import { getTestStdout } from './helpers.js'
+import { TestEvent, parseTestEvents } from '../src/events.js'
+import PackageResult from '../src/results.js'
 
 const getPackageLevelEvent = (testEvents: TestEvent[]): TestEvent => {
   return testEvents.filter(
@@ -12,10 +13,6 @@ const getPackageLevelEvent = (testEvents: TestEvent[]): TestEvent => {
 }
 
 describe('results', () => {
-  beforeEach(() => {
-    mockActionsCoreLogging()
-  })
-
   it('converts events to results', async () => {
     const stdout = await getTestStdout()
     const testEvents = parseTestEvents(stdout)

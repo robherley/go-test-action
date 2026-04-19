@@ -1,3 +1,4 @@
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import * as fs from 'fs/promises'
 import path from 'path'
 import * as actionsExec from '@actions/exec'
@@ -9,10 +10,9 @@ import {
   testFixturesDirectory,
   mockProcessExit,
   createFakeGoModule,
-  mockActionsCoreLogging,
-} from './helpers'
-import Runner from '../src/runner'
-import Renderer from '../src/renderer'
+} from './helpers.js'
+import Runner from '../src/runner.js'
+import Renderer from '../src/renderer.js'
 
 describe('runner', () => {
   beforeAll(async () => {
@@ -20,7 +20,6 @@ describe('runner', () => {
   })
 
   beforeEach(() => {
-    mockActionsCoreLogging()
     setupActionsInputs()
     delete process.env['INPUT_FROMJSONFILE']
     delete process.env['INPUT_FROMJSONFILES']
@@ -48,13 +47,11 @@ describe('runner', () => {
   it('invokes exec with correct arguments', async () => {
     const spyExit = mockProcessExit()
 
-    jest
-      .spyOn(Renderer.prototype, 'writeSummary')
-      .mockImplementationOnce(async () => {})
+    vi.spyOn(Renderer.prototype, 'writeSummary').mockImplementationOnce(
+      async () => {}
+    )
 
-    const spy = jest
-      .spyOn(actionsExec, 'exec')
-      .mockImplementationOnce(async () => 0)
+    const spy = vi.mocked(actionsExec.exec).mockImplementationOnce(async () => 0)
 
     const runner = new Runner()
     await runner.run()
@@ -74,11 +71,11 @@ describe('runner', () => {
   it('exits the process with non-zero exit code on failure', async () => {
     const spyExit = mockProcessExit()
 
-    jest
-      .spyOn(Renderer.prototype, 'writeSummary')
-      .mockImplementationOnce(async () => {})
+    vi.spyOn(Renderer.prototype, 'writeSummary').mockImplementationOnce(
+      async () => {}
+    )
 
-    jest.spyOn(actionsExec, 'exec').mockImplementationOnce(async () => 2)
+    vi.mocked(actionsExec.exec).mockImplementationOnce(async () => 2)
 
     const runner = new Runner()
     await runner.run()
@@ -88,7 +85,7 @@ describe('runner', () => {
 
   it('reads from a single JSON file via fromJSONFile', async () => {
     const spyExit = mockProcessExit()
-    const spyWrite = jest
+    const spyWrite = vi
       .spyOn(Renderer.prototype, 'writeSummary')
       .mockImplementationOnce(async () => {})
 
@@ -106,7 +103,7 @@ describe('runner', () => {
 
   it('reads and combines multiple JSON files via fromJSONFiles', async () => {
     const spyExit = mockProcessExit()
-    const spyWrite = jest
+    const spyWrite = vi
       .spyOn(Renderer.prototype, 'writeSummary')
       .mockImplementationOnce(async () => {})
 

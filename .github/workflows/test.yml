@@ -7,8 +7,8 @@ permissions:
   contents: read
 
 jobs:
-  jest:
-    name: jest
+  vitest:
+    name: vitest
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6

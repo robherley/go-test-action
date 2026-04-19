@@ -1,6 +1,10 @@
 import * as fs from 'fs/promises'
 import * as core from '@actions/core'
 import path from 'path'
+import { fileURLToPath } from 'url'
+import { vi, type MockInstance } from 'vitest'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export const testFixturesDirectory = path.join(__dirname, 'fixtures')
 export const testOutputDirectory = path.join(__dirname, 'output')
@@ -49,9 +53,9 @@ export const createFakeGoModule = async () => {
   )
 }
 
-export const mockProcessExit = (): jest.SpyInstance => {
+export const mockProcessExit = (): MockInstance => {
   // @ts-ignore:next-line
-  return jest.spyOn(process, 'exit').mockImplementationOnce(() => {})
+  return vi.spyOn(process, 'exit').mockImplementationOnce(() => {})
 }
 
 export const getTestStdout = async (): Promise<string> => {
@@ -61,20 +65,3 @@ export const getTestStdout = async (): Promise<string> => {
   return buf.toString()
 }
 
-export const mockActionsCoreLogging = (silent = true) => {
-  type LogFuncs = 'debug' | 'error' | 'warning' | 'notice' | 'info'
-  const logMethods: LogFuncs[] = ['debug', 'error', 'warning', 'notice', 'info']
-  logMethods.forEach(method => {
-    jest
-      .spyOn(core, method)
-      .mockImplementation(
-        (msg: string | Error, props?: core.AnnotationProperties) => {
-          if (silent) return
-          console.log(
-            `[mock: core.${method}(${props ? JSON.stringify(props) : ''})]:`,
-            msg
-          )
-        }
-      )
-  })
-}

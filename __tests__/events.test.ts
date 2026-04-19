@@ -1,11 +1,8 @@
-import { getTestStdout, mockActionsCoreLogging } from './helpers'
-import { parseTestEvents } from '../src/events'
+import { describe, expect, it } from 'vitest'
+import { getTestStdout } from './helpers.js'
+import { parseTestEvents } from '../src/events.js'
 
 describe('events', () => {
-  beforeEach(() => {
-    mockActionsCoreLogging()
-  })
-
   it('correctly parses test2json output', async () => {
     const stdout = await getTestStdout()
 
