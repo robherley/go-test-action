@@ -13,10 +13,10 @@ inputs:
     required: false
     default: './...'
   fromJSONFile:
-    description: 'Parse the specified JSON file, instead of executing go test'
+    description: 'Alias for fromJSONFiles with a single file'
     required: false
   fromJSONFiles:
-    description: 'Parse multiple JSON files (newline-separated) and generate a combined summary'
+    description: 'Parse one or more JSON files (newline-separated) and generate a combined summary'
     required: false
   omit:
     description: 'Whitespace separated list of renderable items to omit. See README.md for details.'

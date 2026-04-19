@@ -1,0 +1,24 @@
+{"Time":"2022-07-10T22:42:11.92576-04:00","Action":"output","Package":"github.com/robherley/go-test-example","Output":"?   \tgithub.com/robherley/go-test-example\t[no test files]\n"}
+{"Time":"2022-07-10T22:42:11.926603-04:00","Action":"skip","Package":"github.com/robherley/go-test-example","Elapsed":0.001}
+{"Time":"2022-07-10T22:42:11.931066-04:00","Action":"run","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess"}
+{"Time":"2022-07-10T22:42:11.931141-04:00","Action":"output","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess","Output":"=== RUN   TestSuccess\n"}
+{"Time":"2022-07-10T22:42:11.931166-04:00","Action":"run","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess/Subtest(1)"}
+{"Time":"2022-07-10T22:42:11.931185-04:00","Action":"output","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess/Subtest(1)","Output":"=== RUN   TestSuccess/Subtest(1)\n"}
+{"Time":"2022-07-10T22:42:11.931204-04:00","Action":"output","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess/Subtest(1)","Output":"    success_test.go:19: hello from subtest #1\n"}
+{"Time":"2022-07-10T22:42:11.931239-04:00","Action":"run","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess/Subtest(2)"}
+{"Time":"2022-07-10T22:42:11.931284-04:00","Action":"output","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess/Subtest(2)","Output":"=== RUN   TestSuccess/Subtest(2)\n"}
+{"Time":"2022-07-10T22:42:11.9313-04:00","Action":"output","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess/Subtest(2)","Output":"    success_test.go:19: hello from subtest #2\n"}
+{"Time":"2022-07-10T22:42:11.931315-04:00","Action":"run","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess/Subtest(3)"}
+{"Time":"2022-07-10T22:42:11.931332-04:00","Action":"output","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess/Subtest(3)","Output":"=== RUN   TestSuccess/Subtest(3)\n"}
+{"Time":"2022-07-10T22:42:11.931347-04:00","Action":"output","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess/Subtest(3)","Output":"    success_test.go:19: hello from subtest #3\n"}
+{"Time":"2022-07-10T22:42:11.931366-04:00","Action":"output","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess","Output":"--- PASS: TestSuccess (0.00s)\n"}
+{"Time":"2022-07-10T22:42:11.931383-04:00","Action":"output","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess/Subtest(1)","Output":"    --- PASS: TestSuccess/Subtest(1) (0.00s)\n"}
+{"Time":"2022-07-10T22:42:11.93144-04:00","Action":"pass","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess/Subtest(1)","Elapsed":0}
+{"Time":"2022-07-10T22:42:11.931461-04:00","Action":"output","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess/Subtest(2)","Output":"    --- PASS: TestSuccess/Subtest(2) (0.00s)\n"}
+{"Time":"2022-07-10T22:42:11.931477-04:00","Action":"pass","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess/Subtest(2)","Elapsed":0}
+{"Time":"2022-07-10T22:42:11.931492-04:00","Action":"output","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess/Subtest(3)","Output":"    --- PASS: TestSuccess/Subtest(3) (0.00s)\n"}
+{"Time":"2022-07-10T22:42:11.931506-04:00","Action":"pass","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess/Subtest(3)","Elapsed":0}
+{"Time":"2022-07-10T22:42:11.931521-04:00","Action":"pass","Package":"github.com/robherley/go-test-example/success","Test":"TestSuccess","Elapsed":0}
+{"Time":"2022-07-10T22:42:11.931536-04:00","Action":"output","Package":"github.com/robherley/go-test-example/success","Output":"PASS\n"}
+{"Time":"2022-07-10T22:42:11.931552-04:00","Action":"output","Package":"github.com/robherley/go-test-example/success","Output":"ok  \tgithub.com/robherley/go-test-example/success\t(cached)\n"}
+{"Time":"2022-07-10T22:42:11.931572-04:00","Action":"pass","Package":"github.com/robherley/go-test-example/success","Elapsed":0.001}

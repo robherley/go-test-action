@@ -6,6 +6,7 @@ import {
   setupActionsInputs,
   testOutputDirectory,
   testModuleDirectory,
+  testFixturesDirectory,
   mockProcessExit,
   createFakeGoModule,
   mockActionsCoreLogging,
@@ -21,6 +22,8 @@ describe('runner', () => {
   beforeEach(() => {
     mockActionsCoreLogging()
     setupActionsInputs()
+    delete process.env['INPUT_FROMJSONFILE']
+    delete process.env['INPUT_FROMJSONFILES']
   })
 
   it('resolves module name from go.mod', async () => {
@@ -81,5 +84,50 @@ describe('runner', () => {
     await runner.run()
 
     expect(spyExit).toHaveBeenCalledWith(2)
+  })
+
+  it('reads from a single JSON file via fromJSONFile', async () => {
+    const spyExit = mockProcessExit()
+    const spyWrite = jest
+      .spyOn(Renderer.prototype, 'writeSummary')
+      .mockImplementationOnce(async () => {})
+
+    process.env['INPUT_FROMJSONFILE'] = path.join(
+      testFixturesDirectory,
+      'gotestoutput-part1.txt'
+    )
+
+    const runner = new Runner()
+    await runner.run()
+
+    expect(spyWrite).toHaveBeenCalled()
+    expect(spyExit).toHaveBeenCalledWith(0)
+  })
+
+  it('reads and combines multiple JSON files via fromJSONFiles', async () => {
+    const spyExit = mockProcessExit()
+    const spyWrite = jest
+      .spyOn(Renderer.prototype, 'writeSummary')
+      .mockImplementationOnce(async () => {})
+
+    const part1 = path.join(testFixturesDirectory, 'gotestoutput-part1.txt')
+    const part2 = path.join(testFixturesDirectory, 'gotestoutput-part2.txt')
+    process.env['INPUT_FROMJSONFILES'] = `${part1}\n${part2}`
+
+    const runner = new Runner()
+    await runner.run()
+
+    expect(spyWrite).toHaveBeenCalled()
+    expect(spyExit).toHaveBeenCalledWith(0)
+  })
+
+  it('throws when a file in fromJSONFiles does not exist', async () => {
+    process.env['INPUT_FROMJSONFILES'] = `${path.join(
+      testFixturesDirectory,
+      'gotestoutput-part1.txt'
+    )}\n/nonexistent/file.json`
+
+    const runner = new Runner()
+    await expect(runner.run()).rejects.toThrow()
   })
 })
