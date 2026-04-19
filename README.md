@@ -17,13 +17,13 @@ Powered by [Job Summaries](https://github.blog/2022-05-09-supercharging-github-a
 
 ```yaml
 - name: Test
-  uses: robherley/go-test-action@v0
+  uses: robherley/go-test-action@v1
 ```
 
 ## Inputs
 
 ```yaml
-- uses: robherley/go-test-action@v0
+- uses: robherley/go-test-action@v1
   with:
     # Relative path to the directory containing the go.mod of the module you wish to test.
     # Optional. Default is '.'
@@ -86,14 +86,14 @@ jobs:
       run: go build -v ./...
 
     - name: Test
-      uses: robherley/go-test-action@v0
+      uses: robherley/go-test-action@v1
 ```
 
 ### Using existing test files
 
 ```yaml
 - name: Test
-  uses: robherley/go-test-action@v0
+  uses: robherley/go-test-action@v1
   with:
     fromJSONFiles: |
       /path/to/pkg1-test2json.json
@@ -106,7 +106,7 @@ See [Inputs](#inputs) above for valid options
 
 ```yaml
 - name: Test
-  uses: robherley/go-test-action@v0
+  uses: robherley/go-test-action@v1
   with:
     omit: |
       pie
@@ -117,7 +117,7 @@ or
 
 ```yaml
 - name: Test
-  uses: robherley/go-test-action@v0
+  uses: robherley/go-test-action@v1
   with:
     omit: 'pie'
 ```
