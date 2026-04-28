@@ -263,15 +263,10 @@ class Renderer {
       skip: { color: '#dbab0a', word: 'Skipped' },
     }
 
-    let pieIndex = 1
     const pieData = conclusiveTestEvents
-      .map(conclusion => {
-        if (!this.totalConclusions[conclusion]) {
-          return ''
-        }
-
-        pieConfig.themeVariables[`pie${pieIndex}`] = keys[conclusion].color
-        pieIndex++
+      .filter(c => this.totalConclusions[c])
+      .map((conclusion, idx) => {
+        pieConfig.themeVariables[`pie${idx + 1}`] = keys[conclusion].color
         return `"${keys[conclusion].word}" : ${this.totalConclusions[conclusion]}\n`
       })
       .join('')
