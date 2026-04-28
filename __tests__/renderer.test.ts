@@ -171,6 +171,45 @@ describe('renderer', () => {
     expect($.text()).toContain(pieData)
   })
 
+  it('renders pie with correct colors when some conclusion types are missing', async () => {
+    const renderer = await getRenderer()
+    renderer.totalConclusions = { pass: 5, fail: 0, skip: 2 }
+    await renderer.writeSummary()
+    const $ = await loadSummaryHTML()
+
+    expect($.text()).toContain('```mermaid')
+    expect($.text()).toContain('"Passed" : 5')
+    expect($.text()).toContain('"Skipped" : 2')
+    expect($.text()).not.toMatch(/"Failed" :/)  // fail should not appear in data
+    expect($.text()).toMatch(/pie1/)
+    expect($.text()).toMatch(/pie2/)
+    expect($.text()).not.toMatch(/pie3/)
+  })
+
+  it('renders pie with correct colors when only passes exist', async () => {
+    const renderer = await getRenderer()
+    renderer.totalConclusions = { pass: 10, fail: 0, skip: 0 }
+    await renderer.writeSummary()
+    const $ = await loadSummaryHTML()
+
+    expect($.text()).toContain('```mermaid')
+    expect($.text()).toContain('"Passed" : 10')
+    expect($.text()).toContain('pie1')
+    expect($.text()).not.toContain('pie2')
+    expect($.text()).not.toContain('pie3')
+  })
+
+  it('renders pie with correct colors when only fails exist', async () => {
+    const renderer = await getRenderer()
+    renderer.totalConclusions = { pass: 0, fail: 3, skip: 0 }
+    await renderer.writeSummary()
+    const $ = await loadSummaryHTML()
+
+    expect($.text()).toContain('```mermaid')
+    expect($.text()).toContain('"Failed" : 3')
+    expect($.text()).toMatch(/pie1.*#cf222e/)  // pie1 should have fail color (red)
+  })
+
   it('does not render pie when pie in omit', async () => {
     const renderer = await getRenderer()
     renderer.omit.add(OmitOption.Pie)
