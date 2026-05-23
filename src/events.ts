@@ -36,7 +36,11 @@ export interface TestEvent {
   isPackageLevel: boolean
   isConclusive: boolean
   isCached: boolean
+  coverage?: number // percentage of statements covered, if reported
 }
+
+// Matches "coverage: 87.5% of statements" emitted by `go test -cover`
+const coverageRegex = /coverage:\s+(\d+(?:\.\d+)?)%\s+of\s+statements/
 
 /**
  * Convert test2json raw JSON output to TestEvent
@@ -50,6 +54,10 @@ export function parseTestEvents(stdout: string): TestEvent[] {
   for (let line of lines) {
     try {
       const json = JSON.parse(line)
+      const coverageMatch =
+        typeof json.Output === 'string'
+          ? json.Output.match(coverageRegex)
+          : null
       events.push({
         time: json.Time && new Date(json.Time),
         action: json.Action as TestEventAction,
@@ -61,6 +69,7 @@ export function parseTestEvents(stdout: string): TestEvent[] {
         isSubtest: json.Test?.includes('/') || false, // afaik there isn't a better indicator in test2json
         isPackageLevel: typeof json.Test === 'undefined',
         isConclusive: conclusiveTestEvents.includes(json.Action),
+        coverage: coverageMatch ? parseFloat(coverageMatch[1]) : undefined,
       })
     } catch {
       core.debug(`unable to parse line: ${line}`)

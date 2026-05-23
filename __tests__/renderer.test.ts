@@ -339,6 +339,63 @@ describe('renderer', () => {
     })
   })
 
+  describe('coverage', () => {
+    it('omits coverage column when no package has coverage', async () => {
+      const renderer = await getRenderer()
+      await renderer.writeSummary()
+      const $ = await loadSummaryHTML()
+
+      expect($('th:contains(Coverage)')).toHaveLength(0)
+      expect($.text()).not.toContain('coverage')
+    })
+
+    it('renders coverage column when at least one package has coverage', async () => {
+      const renderer = await getRenderer()
+      renderer.packageResults[1].coverage = 42.5
+      renderer.packageResults[3].coverage = 100.0
+      await renderer.writeSummary()
+      const $ = await loadSummaryHTML()
+
+      expect($('th:contains(📊 Coverage)')).toHaveLength(1)
+      expect($('td:contains(42.5%)')).toHaveLength(1)
+      expect($('td:contains(100.0%)')).toHaveLength(1)
+      // Packages without coverage get a placeholder
+      expect($('td:contains(—)').length).toBeGreaterThan(0)
+    })
+
+    it('renders mean coverage in summary text', async () => {
+      const renderer = await getRenderer()
+      renderer.packageResults[1].coverage = 40.0
+      renderer.packageResults[3].coverage = 60.0
+      await renderer.writeSummary()
+      const $ = await loadSummaryHTML()
+
+      expect($.text()).toContain('50.0% coverage')
+    })
+
+    it('renders a 10-segment block progress bar', async () => {
+      const renderer = await getRenderer()
+      renderer.packageResults[1].coverage = 70.0
+      renderer.packageResults[3].coverage = 0
+      await renderer.writeSummary()
+      const $ = await loadSummaryHTML()
+
+      // 70% → 7 filled + 3 empty
+      expect($('td:contains(███████░░░)')).toHaveLength(1)
+      // 0% → 10 empty
+      expect($('td:contains(░░░░░░░░░░)')).toHaveLength(1)
+    })
+
+    it('expands details colspan to include coverage column', async () => {
+      const renderer = await getRenderer()
+      renderer.packageResults[1].coverage = 80.0
+      await renderer.writeSummary()
+      const $ = await loadSummaryHTML()
+
+      expect($('td[colspan="6"]').length).toBeGreaterThan(0)
+    })
+  })
+
   it('scrubs ansi from test output', async () => {
     const renderer = await getRenderer()
     const placeholder = 'no-ansi-please'

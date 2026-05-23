@@ -6,6 +6,7 @@
   - [Screenshots](#screenshots)
   - [Examples](#examples)
     - [Basic](#basic)
+    - [Coverage](#coverage)
     - [Using existing test files](#using-existing-test-files)
     - [Omitting elements](#omitting-elements)
 
@@ -87,6 +88,17 @@ jobs:
 
     - name: Test
       uses: robherley/go-test-action@v1
+```
+
+### Coverage
+
+When `go test` is invoked with `-cover` (or `-coverprofile=...`), the action parses the per-package `coverage: X.Y% of statements` lines and appends a 📊 Coverage column to the summary table, plus the mean coverage to the header text.
+
+```yaml
+- name: Test
+  uses: robherley/go-test-action@v1
+  with:
+    testArguments: '-cover ./...'
 ```
 
 ### Using existing test files
