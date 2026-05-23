@@ -356,14 +356,19 @@ describe('renderer', () => {
       await renderer.writeSummary()
       const $ = await loadSummaryHTML()
 
-      expect($('th:contains(📊 Coverage)')).toHaveLength(1)
+      // header spans the percentage + bar columns
+      const coverageHeader = $('th:contains(📊 Coverage)')
+      expect(coverageHeader).toHaveLength(1)
+      expect(coverageHeader.attr('colspan')).toEqual('2')
       // single decimal preserved
       expect($('td:contains(42.4%)')).toHaveLength(1)
       // trailing .0 dropped
       expect($('td:contains(100%)')).toHaveLength(1)
       expect($('td:contains(100.0%)')).toHaveLength(0)
-      // Packages without coverage get a placeholder
-      expect($('td:contains(—)').length).toBeGreaterThan(0)
+      // Packages without coverage get a placeholder spanning both columns
+      const placeholder = $('td:contains(—)')
+      expect(placeholder.length).toBeGreaterThan(0)
+      expect(placeholder.first().attr('colspan')).toEqual('2')
     })
 
     it('renders mean coverage in summary text', async () => {
@@ -389,13 +394,29 @@ describe('renderer', () => {
       expect($('td:contains(░░░░░░░░░░)')).toHaveLength(1)
     })
 
-    it('expands details colspan to include coverage column', async () => {
+    it('renders the percentage and bar in separate columns', async () => {
+      const renderer = await getRenderer()
+      renderer.packageResults[1].coverage = 70.0
+      await renderer.writeSummary()
+      const $ = await loadSummaryHTML()
+
+      const row = $('tr')
+        .filter((_, el) => $(el).text().includes('70%'))
+        .first()
+      const cells = row.find('td')
+      // package, passed, failed, skipped, duration, pct, bar = 7 cells
+      expect(cells.length).toEqual(7)
+      expect($(cells[5]).text()).toContain('70%')
+      expect($(cells[6]).text()).toContain('███████░░░')
+    })
+
+    it('expands details colspan to include coverage columns', async () => {
       const renderer = await getRenderer()
       renderer.packageResults[1].coverage = 80.0
       await renderer.writeSummary()
       const $ = await loadSummaryHTML()
 
-      expect($('td[colspan="6"]').length).toBeGreaterThan(0)
+      expect($('td[colspan="7"]').length).toBeGreaterThan(0)
     })
   })
 

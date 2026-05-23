@@ -42,7 +42,7 @@ class Renderer {
       { data: '⏳ Duration', header: true },
     ]
     if (this.hasCoverage()) {
-      headers.push({ data: '📊 Coverage', header: true })
+      headers.push({ data: '📊 Coverage', header: true, colspan: '2' })
     }
     return headers
   }
@@ -171,7 +171,9 @@ class Renderer {
 
     const overall = this.overallCoverage()
     if (overall !== undefined) {
-      summarized += `<br>${this.formatCoverage(overall)} coverage`
+      summarized += `<br>${this.coverageBar(overall)} ${this.coveragePct(
+        overall
+      )} coverage`
     }
 
     return summarized
@@ -197,13 +199,17 @@ class Renderer {
     return coverages.reduce((a, b) => a + b, 0) / coverages.length
   }
 
-  private formatCoverage(value: number): string {
+  private coverageBar(value: number): string {
     const segments = 10
     const clamped = Math.max(0, Math.min(100, value))
     const filled = Math.round((clamped / 100) * segments)
     const bar = '█'.repeat(filled) + '░'.repeat(segments - filled)
-    const pct = value.toFixed(1).replace(/\.0$/, '')
-    return `<code>${bar}</code> ${pct}%`
+    return `<code>${bar}</code>`
+  }
+
+  private coveragePct(value: number): string {
+    // single decimal, but drop a trailing ".0" (e.g. 100.0 -> 100, 68.4 -> 68.4)
+    return `${value.toFixed(1).replace(/\.0$/, '')}%`
   }
 
   /**
@@ -270,18 +276,17 @@ class Renderer {
       `${(packageResult.packageEvent.elapsed || 0) * 1000}ms`,
     ]
     if (hasCoverage) {
-      row.push(
-        packageResult.coverage !== undefined
-          ? this.formatCoverage(packageResult.coverage)
-          : '—'
-      )
+      if (packageResult.coverage !== undefined) {
+        row.push(this.coveragePct(packageResult.coverage))
+        row.push(this.coverageBar(packageResult.coverage))
+      } else {
+        row.push({ data: '—', colspan: '2' })
+      }
     }
 
     const packageRows: SummaryTableRow[] = [row]
     if (details) {
-      packageRows.push([
-        { data: details, colspan: hasCoverage ? '6' : '5' },
-      ])
+      packageRows.push([{ data: details, colspan: hasCoverage ? '7' : '5' }])
     }
 
     return packageRows
