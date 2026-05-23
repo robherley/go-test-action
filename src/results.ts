@@ -12,6 +12,7 @@ class PackageResult {
   packageEvent: TestEvent
   events: TestEvent[]
   tests: TestResults = {}
+  coverage?: number
   conclusions: ConclusionResults = {
     pass: 0,
     fail: 0,
@@ -23,6 +24,12 @@ class PackageResult {
     this.events = events.filter(
       e => !e.isPackageLevel && e.package === this.packageEvent.package
     )
+    this.coverage = events
+      .filter(
+        e => e.package === this.packageEvent.package && e.coverage !== undefined
+      )
+      .map(e => e.coverage as number)
+      .pop()
 
     this.eventsToResults()
   }

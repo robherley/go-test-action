@@ -6,6 +6,7 @@
   - [Screenshots](#screenshots)
   - [Examples](#examples)
     - [Basic](#basic)
+    - [Coverage](#coverage)
     - [Using existing test files](#using-existing-test-files)
     - [Omitting elements](#omitting-elements)
 
@@ -32,6 +33,12 @@ Powered by [Job Summaries](https://github.blog/2022-05-09-supercharging-github-a
     # Arguments to pass to go test, -json will be prepended automatically.
     # Optional. Default is './...'
     testArguments:
+
+    # If true, appends `-cover` to the go test command. Skipped if testArguments
+    # already contains a -cover* flag (e.g. -coverprofile=...). Coverage is rendered
+    # as a column in the summary table.
+    # Optional. Default is 'false'
+    cover:
 
     # Parse one or more [test2json](https://pkg.go.dev/cmd/test2json) files (newline-separated) and generate a combined summary.
     # Will always exit(0) on successful test file parse.
@@ -87,6 +94,28 @@ jobs:
 
     - name: Test
       uses: robherley/go-test-action@v1
+```
+
+### Coverage
+
+When `go test` is invoked with `-cover` (or `-coverprofile=...`), the action parses the per-package `coverage: X.Y% of statements` lines and appends a 📊 Coverage column to the summary table, plus the mean coverage to the header text.
+
+Use the `cover` input as a shortcut to append `-cover`:
+
+```yaml
+- name: Test
+  uses: robherley/go-test-action@v1
+  with:
+    cover: true
+```
+
+Or pass a coverage flag directly via `testArguments`:
+
+```yaml
+- name: Test
+  uses: robherley/go-test-action@v1
+  with:
+    testArguments: '-coverprofile=coverage.out ./...'
 ```
 
 ### Using existing test files

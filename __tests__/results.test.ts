@@ -75,6 +75,39 @@ describe('results', () => {
 `)
   })
 
+  it('captures coverage from package events', async () => {
+    const stdout = await getTestStdout()
+    const testEvents = parseTestEvents(stdout)
+    const packageEvent = getPackageLevelEvent(testEvents)
+
+    const coverageEvent: TestEvent = {
+      action: 'output',
+      package: packageEvent.package,
+      test: undefined as unknown as string,
+      output: 'coverage: 73.2% of statements\n',
+      isCached: false,
+      isSubtest: false,
+      isPackageLevel: true,
+      isConclusive: false,
+      coverage: 73.2,
+    }
+
+    const packageResult = new PackageResult(packageEvent, [
+      ...testEvents,
+      coverageEvent,
+    ])
+    expect(packageResult.coverage).toEqual(73.2)
+  })
+
+  it('leaves coverage undefined when not reported', async () => {
+    const stdout = await getTestStdout()
+    const testEvents = parseTestEvents(stdout)
+    const packageEvent = getPackageLevelEvent(testEvents)
+    const packageResult = new PackageResult(packageEvent, testEvents)
+
+    expect(packageResult.coverage).toBeUndefined()
+  })
+
   it('filters out any mismatched events by package', async () => {
     const stdout = await getTestStdout()
     const testEvents = parseTestEvents(stdout)

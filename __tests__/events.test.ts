@@ -73,6 +73,22 @@ describe('events', () => {
     }
   })
 
+  it('parses coverage percentage from output', () => {
+    const cases: [string, number | undefined][] = [
+      ['coverage: 87.5% of statements\\n', 87.5],
+      ['coverage: 100.0% of statements\\n', 100.0],
+      ['coverage: 0.0% of statements\\n', 0],
+      ['ok  \\tgithub.com/foo\\t0.123s\\tcoverage: 42.3% of statements\\n', 42.3],
+      ['hello world\\n', undefined],
+    ]
+
+    for (const [output, expected] of cases) {
+      const stdout = `{"Time":"2022-07-10T22:42:11.92576-04:00","Action":"output","Package":"github.com/foo","Output":"${output}"}`
+      const [event] = parseTestEvents(stdout)
+      expect(event.coverage).toEqual(expected)
+    }
+  })
+
   it('correctly indicates a cached test', () => {
     const cachedStdout =
       '{"Time":"2022-07-10T22:42:11.931552-04:00","Action":"output","Package":"github.com/robherley/go-test-example/success","Output":"ok  \\tgithub.com/robherley/go-test-example/success\\t(cached)\\n"}'

@@ -128,16 +128,17 @@ class Runner {
       },
     })
 
-    const retCode = await exec(
-      'go',
-      ['test', '-json', ...this.inputs.testArguments],
-      {
-        cwd: this.inputs.moduleDirectory,
-        ignoreReturnCode: true,
-        outStream,
-        errStream,
-      }
-    )
+    const args = ['test', '-json', ...this.inputs.testArguments]
+    if (this.inputs.cover && !args.some(a => /^-{1,2}cover/.test(a))) {
+      args.push('-cover')
+    }
+
+    const retCode = await exec('go', args, {
+      cwd: this.inputs.moduleDirectory,
+      ignoreReturnCode: true,
+      outStream,
+      errStream,
+    })
 
     return {
       retCode,

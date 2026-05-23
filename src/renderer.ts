@@ -27,17 +27,24 @@ class Renderer {
   stderr: string
   omit: Set<OmitOption>
   packageResults: PackageResult[]
-  headers: SummaryTableRow = [
-    { data: '📦 Package', header: true },
-    { data: '🟢 Passed', header: true },
-    { data: '🔴 Failed', header: true },
-    { data: '🟡 Skipped', header: true },
-    { data: '⏳ Duration', header: true },
-  ]
   totalConclusions: ConclusionResults = {
     pass: 0,
     fail: 0,
     skip: 0,
+  }
+
+  get headers(): SummaryTableRow {
+    const headers: SummaryTableRow = [
+      { data: '📦 Package', header: true },
+      { data: '🟢 Passed', header: true },
+      { data: '🔴 Failed', header: true },
+      { data: '🟡 Skipped', header: true },
+      { data: '⏳ Duration', header: true },
+    ]
+    if (this.hasCoverage()) {
+      headers.push({ data: '📊 Coverage', header: true, colspan: '2' })
+    }
+    return headers
   }
 
   constructor(
@@ -111,10 +118,10 @@ class Renderer {
 
     const packageResults: PackageResult[] = []
     for (let pkgEvent of pkgLevelConclusiveEvents) {
-      const otherPackageEvents = this.testEvents.filter(
-        e => e.package === pkgEvent.package && !e.isPackageLevel
+      const allPackageEvents = this.testEvents.filter(
+        e => e.package === pkgEvent.package
       )
-      const packageResult = new PackageResult(pkgEvent, otherPackageEvents)
+      const packageResult = new PackageResult(pkgEvent, allPackageEvents)
       for (let [key, value] of Object.entries(packageResult.conclusions)) {
         this.totalConclusions[key as TestEventActionConclusion] += value
       }
@@ -162,7 +169,47 @@ class Renderer {
       summarized += ` (${conclusionText})`
     }
 
+    const overall = this.overallCoverage()
+    if (overall !== undefined) {
+      summarized += `<br>${this.coverageBar(overall)} ${this.coveragePct(
+        overall
+      )} coverage`
+    }
+
     return summarized
+  }
+
+  /**
+   * Whether any package reports a coverage percentage
+   */
+  hasCoverage(): boolean {
+    return this.packageResults.some(r => r.coverage !== undefined)
+  }
+
+  /**
+   * Mean coverage across packages that report it, or undefined if none do
+   */
+  overallCoverage(): number | undefined {
+    const coverages = this.packageResults
+      .map(r => r.coverage)
+      .filter((c): c is number => c !== undefined)
+    if (coverages.length === 0) {
+      return undefined
+    }
+    return coverages.reduce((a, b) => a + b, 0) / coverages.length
+  }
+
+  private coverageBar(value: number): string {
+    const segments = 10
+    const clamped = Math.max(0, Math.min(100, value))
+    const filled = Math.round((clamped / 100) * segments)
+    const bar = '█'.repeat(filled) + '░'.repeat(segments - filled)
+    return `<code>${bar}</code>`
+  }
+
+  private coveragePct(value: number): string {
+    // single decimal, but drop a trailing ".0" (e.g. 100.0 -> 100, 68.4 -> 68.4)
+    return `${value.toFixed(1).replace(/\.0$/, '')}%`
   }
 
   /**
@@ -220,18 +267,26 @@ class Renderer {
       packageResult.packageEvent.package === this.moduleName ? ' (main)' : ''
     }</code>`
 
-    const packageRows: SummaryTableRow[] = [
-      [
-        pkgName,
-        packageResult.conclusions.pass.toString(),
-        packageResult.conclusions.fail.toString(),
-        packageResult.conclusions.skip.toString(),
-        `${(packageResult.packageEvent.elapsed || 0) * 1000}ms`,
-      ],
+    const hasCoverage = this.hasCoverage()
+    const row: SummaryTableRow = [
+      pkgName,
+      packageResult.conclusions.pass.toString(),
+      packageResult.conclusions.fail.toString(),
+      packageResult.conclusions.skip.toString(),
+      `${(packageResult.packageEvent.elapsed || 0) * 1000}ms`,
     ]
+    if (hasCoverage) {
+      if (packageResult.coverage !== undefined) {
+        row.push(this.coveragePct(packageResult.coverage))
+        row.push(this.coverageBar(packageResult.coverage))
+      } else {
+        row.push({ data: '—', colspan: '2' })
+      }
+    }
 
+    const packageRows: SummaryTableRow[] = [row]
     if (details) {
-      packageRows.push([{ data: details, colspan: '5' }])
+      packageRows.push([{ data: details, colspan: hasCoverage ? '7' : '5' }])
     }
 
     return packageRows

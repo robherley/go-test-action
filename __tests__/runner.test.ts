@@ -68,6 +68,49 @@ describe('runner', () => {
     expect(spyExit).toHaveBeenCalledWith(0)
   })
 
+  it('appends -cover when cover input is set', async () => {
+    mockProcessExit()
+    vi.spyOn(Renderer.prototype, 'writeSummary').mockImplementationOnce(
+      async () => {}
+    )
+
+    process.env['INPUT_COVER'] = 'true'
+    const spy = vi.mocked(actionsExec.exec).mockImplementationOnce(async () => 0)
+
+    const runner = new Runner()
+    await runner.run()
+
+    expect(spy).toHaveBeenCalledWith(
+      'go',
+      ['test', '-json', './...', '-cover'],
+      expect.anything()
+    )
+
+    delete process.env['INPUT_COVER']
+  })
+
+  it('does not duplicate -cover when already in testArguments', async () => {
+    mockProcessExit()
+    vi.spyOn(Renderer.prototype, 'writeSummary').mockImplementationOnce(
+      async () => {}
+    )
+
+    process.env['INPUT_COVER'] = 'true'
+    process.env['INPUT_TESTARGUMENTS'] = '-coverprofile=cov.out ./...'
+    const spy = vi.mocked(actionsExec.exec).mockImplementationOnce(async () => 0)
+
+    const runner = new Runner()
+    await runner.run()
+
+    expect(spy).toHaveBeenCalledWith(
+      'go',
+      ['test', '-json', '-coverprofile=cov.out', './...'],
+      expect.anything()
+    )
+
+    delete process.env['INPUT_COVER']
+  })
+
   it('exits the process with non-zero exit code on failure', async () => {
     const spyExit = mockProcessExit()
 

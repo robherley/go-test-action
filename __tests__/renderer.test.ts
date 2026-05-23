@@ -339,6 +339,87 @@ describe('renderer', () => {
     })
   })
 
+  describe('coverage', () => {
+    it('omits coverage column when no package has coverage', async () => {
+      const renderer = await getRenderer()
+      await renderer.writeSummary()
+      const $ = await loadSummaryHTML()
+
+      expect($('th:contains(Coverage)')).toHaveLength(0)
+      expect($.text()).not.toContain('coverage')
+    })
+
+    it('renders coverage column when at least one package has coverage', async () => {
+      const renderer = await getRenderer()
+      renderer.packageResults[1].coverage = 42.4
+      renderer.packageResults[3].coverage = 100.0
+      await renderer.writeSummary()
+      const $ = await loadSummaryHTML()
+
+      // header spans the percentage + bar columns
+      const coverageHeader = $('th:contains(📊 Coverage)')
+      expect(coverageHeader).toHaveLength(1)
+      expect(coverageHeader.attr('colspan')).toEqual('2')
+      // single decimal preserved
+      expect($('td:contains(42.4%)')).toHaveLength(1)
+      // trailing .0 dropped
+      expect($('td:contains(100%)')).toHaveLength(1)
+      expect($('td:contains(100.0%)')).toHaveLength(0)
+      // Packages without coverage get a placeholder spanning both columns
+      const placeholder = $('td:contains(—)')
+      expect(placeholder.length).toBeGreaterThan(0)
+      expect(placeholder.first().attr('colspan')).toEqual('2')
+    })
+
+    it('renders mean coverage in summary text', async () => {
+      const renderer = await getRenderer()
+      renderer.packageResults[1].coverage = 40.0
+      renderer.packageResults[3].coverage = 60.0
+      await renderer.writeSummary()
+      const $ = await loadSummaryHTML()
+
+      expect($.text()).toContain('50% coverage')
+    })
+
+    it('renders a 10-segment block progress bar', async () => {
+      const renderer = await getRenderer()
+      renderer.packageResults[1].coverage = 70.0
+      renderer.packageResults[3].coverage = 0
+      await renderer.writeSummary()
+      const $ = await loadSummaryHTML()
+
+      // 70% → 7 filled + 3 empty
+      expect($('td:contains(███████░░░)')).toHaveLength(1)
+      // 0% → 10 empty
+      expect($('td:contains(░░░░░░░░░░)')).toHaveLength(1)
+    })
+
+    it('renders the percentage and bar in separate columns', async () => {
+      const renderer = await getRenderer()
+      renderer.packageResults[1].coverage = 70.0
+      await renderer.writeSummary()
+      const $ = await loadSummaryHTML()
+
+      const row = $('tr')
+        .filter((_, el) => $(el).text().includes('70%'))
+        .first()
+      const cells = row.find('td')
+      // package, passed, failed, skipped, duration, pct, bar = 7 cells
+      expect(cells.length).toEqual(7)
+      expect($(cells[5]).text()).toContain('70%')
+      expect($(cells[6]).text()).toContain('███████░░░')
+    })
+
+    it('expands details colspan to include coverage columns', async () => {
+      const renderer = await getRenderer()
+      renderer.packageResults[1].coverage = 80.0
+      await renderer.writeSummary()
+      const $ = await loadSummaryHTML()
+
+      expect($('td[colspan="7"]').length).toBeGreaterThan(0)
+    })
+  })
+
   it('scrubs ansi from test output', async () => {
     const renderer = await getRenderer()
     const placeholder = 'no-ansi-please'
