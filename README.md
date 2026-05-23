@@ -3,7 +3,7 @@
 - [go-test-action](#go-test-action)
   - [Quick start](#quick-start)
   - [Inputs](#inputs)
-  - [Screenshots](#screenshots)
+  - [Demo](#demo)
   - [Examples](#examples)
     - [Basic](#basic)
     - [Coverage](#coverage)
@@ -58,15 +58,78 @@ Powered by [Job Summaries](https://github.blog/2022-05-09-supercharging-github-a
     omit:
 ```
 
-## Screenshots
+## Demo
 
-Tests are organized per package, with a brief summary of individual test results:
+Here's a rendered output (with coverage) from [`robherley/go-test-example`](https://github.com/robherley/go-test-example):
 
-![summary overview](docs/img/overview.png)
+<details><summary>🖼️ Demo Test Summary</summary>
 
-Expand for per-test (with subtest) results and to view raw test output:
+<h2>📝 Test results</h2>
+<div align="center"><h3><code>github.com/robherley/go-test-example</code></h3>15 tests (12 passed, 2 failed, 1 skipped)<br><code>█████░░░░░</code> 53.1% coverage
 
-![summary expanded](docs/img/expanded.png)
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"fontFamily":"monospace","pieSectionTextSize":"24px","darkMode":true,"pie1":"#2da44e","pie2":"#cf222e","pie3":"#dbab0a"}}}%%
+pie showData
+"Passed" : 12
+"Failed" : 2
+"Skipped" : 1
+
+```
+
+</div><table align="center"><tr><th>📦 Package</th><th>🟢 Passed</th><th>🔴 Failed</th><th>🟡 Skipped</th><th>⏳ Duration</th><th colspan="2">📊 Coverage</th></tr><tr><td>🟡 <code>. (main)</code></td><td>0</td><td>0</td><td>0</td><td>0ms</td><td colspan="2">—</td></tr><tr><td colspan="7"><details><summary>🧪 Tests</summary>(none)</details><details><summary>🖨️ Output</summary><pre><code>(none)</code></pre></details></td></tr><tr><td>🔴 <code>boom</code></td><td>0</td><td>2</td><td>0</td><td>6ms</td><td colspan="2">—</td></tr><tr><td colspan="7"><details><summary>🧪 Tests</summary><ul><li>🔴<code>TestFatal</code></li><li>🔴<code>TestPanic</code></li></ul></details><details><summary>🖨️ Output</summary><pre><code>=== RUN   TestFatal
+    boom_test.go:6: this was a failure
+--- FAIL: TestFatal (0.00s)
+=== RUN   TestPanic
+--- FAIL: TestPanic (0.00s)
+panic: this was a panic [recovered]
+	panic: this was a panic
+
+goroutine 19 [running]:
+testing.tRunner.func1.2({0x4fde60, 0x549ed8})
+	/opt/hostedtoolcache/go/1.18.10/x64/src/testing/testing.go:1389 +0x24e
+testing.tRunner.func1()
+	/opt/hostedtoolcache/go/1.18.10/x64/src/testing/testing.go:1392 +0x39f
+panic({0x4fde60, 0x549ed8})
+	/opt/hostedtoolcache/go/1.18.10/x64/src/runtime/panic.go:838 +0x207
+github.com/robherley/go-test-example/boom_test.TestPanic(0x0?)
+	/home/runner/work/go-test-example/go-test-example/boom/boom_test.go:10 +0x27
+testing.tRunner(0xc0000836c0, 0x529288)
+	/opt/hostedtoolcache/go/1.18.10/x64/src/testing/testing.go:1439 +0x102
+created by testing.(*T).Run
+	/opt/hostedtoolcache/go/1.18.10/x64/src/testing/testing.go:1486 +0x35f
+</code></pre></details></td></tr><tr><td>🟢 <code>highcov</code></td><td>7</td><td>0</td><td>0</td><td>4ms</td><td>100%</td><td><code>██████████</code></td></tr><tr><td colspan="7"><details><summary>🧪 Tests</summary><ul><li>🟢<code>TestAdd</code></li><li>🟢<code>TestDiv</code></li><li>🟢<code>TestFizzBuzz</code></li><li>🟢<code>TestMul</code></li><li>🟢<code>TestReverse</code></li><li>🟢<code>TestShout</code></li><li>🟢<code>TestSub</code></li></ul></details><details><summary>🖨️ Output</summary><pre><code>=== RUN   TestAdd
+--- PASS: TestAdd (0.00s)
+=== RUN   TestSub
+--- PASS: TestSub (0.00s)
+=== RUN   TestMul
+--- PASS: TestMul (0.00s)
+=== RUN   TestDiv
+--- PASS: TestDiv (0.00s)
+=== RUN   TestReverse
+--- PASS: TestReverse (0.00s)
+=== RUN   TestShout
+--- PASS: TestShout (0.00s)
+=== RUN   TestFizzBuzz
+--- PASS: TestFizzBuzz (0.00s)
+</code></pre></details></td></tr><tr><td>🟢 <code>lowcov</code></td><td>1</td><td>0</td><td>0</td><td>4ms</td><td>6.2%</td><td><code>█░░░░░░░░░</code></td></tr><tr><td colspan="7"><details><summary>🧪 Tests</summary><ul><li>🟢<code>TestAdd</code></li></ul></details><details><summary>🖨️ Output</summary><pre><code>=== RUN   TestAdd
+--- PASS: TestAdd (0.00s)
+</code></pre></details></td></tr><tr><td>🟢 <code>skipme</code></td><td>0</td><td>0</td><td>1</td><td>3ms</td><td colspan="2">—</td></tr><tr><td colspan="7"><details><summary>🧪 Tests</summary><ul><li>🟡<code>TestSkip</code></li></ul></details><details><summary>🖨️ Output</summary><pre><code>=== RUN   TestSkip
+    skipme_test.go:6: skip me
+--- SKIP: TestSkip (0.00s)
+</code></pre></details></td></tr><tr><td>🟢 <code>success</code></td><td>4</td><td>0</td><td>0</td><td>2ms</td><td colspan="2">—</td></tr><tr><td colspan="7"><details><summary>🧪 Tests</summary><ul><li>🟢<code>TestSuccess</code></li><ul><li>🟢<code>TestSuccess/Subtest(1)</code></li><li>🟢<code>TestSuccess/Subtest(2)</code></li><li>🟢<code>TestSuccess/Subtest(3)</code></li></ul></ul></details><details><summary>🖨️ Output</summary><pre><code>=== RUN   TestSuccess
+=== RUN   TestSuccess/Subtest(1)
+    success_test.go:19: hello from subtest #1
+=== RUN   TestSuccess/Subtest(2)
+    success_test.go:19: hello from subtest #2
+=== RUN   TestSuccess/Subtest(3)
+    success_test.go:19: hello from subtest #3
+--- PASS: TestSuccess (0.00s)
+    --- PASS: TestSuccess/Subtest(1) (0.00s)
+    --- PASS: TestSuccess/Subtest(2) (0.00s)
+    --- PASS: TestSuccess/Subtest(3) (0.00s)
+</code></pre></details></td></tr></table>
+
+</details>
 
 ## Examples
 
