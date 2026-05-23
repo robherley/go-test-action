@@ -84,9 +84,40 @@ class Renderer {
       .addRaw(this.renderSummaryText())
       .addRaw(this.renderPie())
       .addRaw('</div>')
-      .addTable(rows)
+      .addRaw(this.renderTable(rows))
       .addRaw(this.renderStderr())
       .write()
+  }
+
+  /**
+   * Renders the results table. Equivalent to core.summary.addTable, but emits a
+   * centered <table>. GitHub renders tables as `display: block; width:
+   * max-content`, and the deprecated align="center" attribute maps to auto
+   * inline margins in the UA stylesheet, which centers that block.
+   * @param rows the table rows to render
+   * @returns stringified HTML table
+   */
+  private renderTable(rows: SummaryTableRow[]): string {
+    const body = rows
+      .map(row => {
+        const cells = row
+          .map(cell => {
+            if (typeof cell === 'string') {
+              return `<td>${cell}</td>`
+            }
+            const tag = cell.header ? 'th' : 'td'
+            const attrs = [
+              cell.colspan ? ` colspan="${cell.colspan}"` : '',
+              cell.rowspan ? ` rowspan="${cell.rowspan}"` : '',
+            ].join('')
+            return `<${tag}${attrs}>${cell.data}</${tag}>`
+          })
+          .join('')
+        return `<tr>${cells}</tr>`
+      })
+      .join('')
+
+    return `<table align="center">${body}</table>`
   }
 
   /**
@@ -213,6 +244,27 @@ class Renderer {
   }
 
   /**
+   * Strips the module name prefix from a package import path, since the module
+   * name is already displayed once in the summary heading. Returns the path
+   * relative to the module root (e.g. "internal/foo"), "." for the module root
+   * itself, or the unmodified path when there's no module name to strip.
+   * @param pkg the full package import path
+   * @returns the package path relative to the module
+   */
+  private relativePackage(pkg: string): string {
+    if (!this.moduleName) {
+      return pkg
+    }
+    if (pkg === this.moduleName) {
+      return '.'
+    }
+    if (pkg.startsWith(`${this.moduleName}/`)) {
+      return pkg.slice(this.moduleName.length + 1)
+    }
+    return pkg
+  }
+
+  /**
    * For a given package event, renders the results, tests and subtests into a SummaryTableRow
    * @param packageResult the package result
    * @returns summary table row
@@ -261,11 +313,11 @@ class Renderer {
       }</code></pre></details>`
     }
 
+    const pkg = packageResult.packageEvent.package
+    const isMain = pkg === this.moduleName
     const pkgName = `${this.emojiFor(
       packageResult.packageEvent.action
-    )} <code>${packageResult.packageEvent.package}${
-      packageResult.packageEvent.package === this.moduleName ? ' (main)' : ''
-    }</code>`
+    )} <code>${this.relativePackage(pkg)}${isMain ? ' (main)' : ''}</code>`
 
     const hasCoverage = this.hasCoverage()
     const row: SummaryTableRow = [
