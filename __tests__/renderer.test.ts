@@ -203,6 +203,47 @@ describe('renderer', () => {
     })
   })
 
+  it('strips the module name prefix from package names', async () => {
+    const renderer = await getRenderer()
+    await renderer.writeSummary()
+    const $ = await loadSummaryHTML()
+
+    const cells = $('td code')
+      .map((_, el) => $(el).text())
+      .get()
+
+    // module root is shown as "." with a (main) marker
+    expect(cells).toContain('. (main)')
+    // sub-packages are shown relative to the module
+    expect(cells).toContain('boom')
+    expect(cells).toContain('skipme')
+    expect(cells).toContain('success')
+    // the full module path should not leak into the package column
+    expect(cells).not.toContain('github.com/robherley/go-test-example')
+  })
+
+  it('keeps full package paths when module name is missing', async () => {
+    const renderer = await getRenderer()
+    renderer.moduleName = null
+    await renderer.writeSummary()
+    const $ = await loadSummaryHTML()
+
+    const cells = $('td code')
+      .map((_, el) => $(el).text())
+      .get()
+
+    expect(cells).toContain('github.com/robherley/go-test-example')
+    expect(cells).toContain('github.com/robherley/go-test-example/boom')
+  })
+
+  it('renders a centered table', async () => {
+    const renderer = await getRenderer()
+    await renderer.writeSummary()
+    const $ = await loadSummaryHTML()
+
+    expect($('table').attr('align')).toEqual('center')
+  })
+
   it('renders correct number of table rows when untested is in omit', async () => {
     const renderer = await getRenderer()
     renderer.omit.add(OmitOption.Untested)
