@@ -199,9 +199,11 @@ class Renderer {
 
   private formatCoverage(value: number): string {
     const segments = 10
-    const filled = Math.round((Math.max(0, Math.min(100, value)) / 100) * segments)
+    const clamped = Math.max(0, Math.min(100, value))
+    const filled = Math.round((clamped / 100) * segments)
     const bar = '█'.repeat(filled) + '░'.repeat(segments - filled)
-    return `<code>${bar}</code> ${value.toFixed(1)}%`
+    const pct = value.toFixed(1).replace(/\.0$/, '')
+    return `<code>${bar}</code> ${pct}%`
   }
 
   /**

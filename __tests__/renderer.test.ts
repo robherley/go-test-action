@@ -351,14 +351,17 @@ describe('renderer', () => {
 
     it('renders coverage column when at least one package has coverage', async () => {
       const renderer = await getRenderer()
-      renderer.packageResults[1].coverage = 42.5
+      renderer.packageResults[1].coverage = 42.4
       renderer.packageResults[3].coverage = 100.0
       await renderer.writeSummary()
       const $ = await loadSummaryHTML()
 
       expect($('th:contains(📊 Coverage)')).toHaveLength(1)
-      expect($('td:contains(42.5%)')).toHaveLength(1)
-      expect($('td:contains(100.0%)')).toHaveLength(1)
+      // single decimal preserved
+      expect($('td:contains(42.4%)')).toHaveLength(1)
+      // trailing .0 dropped
+      expect($('td:contains(100%)')).toHaveLength(1)
+      expect($('td:contains(100.0%)')).toHaveLength(0)
       // Packages without coverage get a placeholder
       expect($('td:contains(—)').length).toBeGreaterThan(0)
     })
@@ -370,7 +373,7 @@ describe('renderer', () => {
       await renderer.writeSummary()
       const $ = await loadSummaryHTML()
 
-      expect($.text()).toContain('50.0% coverage')
+      expect($.text()).toContain('50% coverage')
     })
 
     it('renders a 10-segment block progress bar', async () => {
