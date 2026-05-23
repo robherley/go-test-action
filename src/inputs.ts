@@ -4,6 +4,7 @@ export interface Inputs {
   moduleDirectory: string
   testArguments: string[]
   fromJSONFiles: string[] | null
+  cover: boolean
   omit: Set<OmitOption>
 }
 
@@ -26,6 +27,7 @@ export const defaultInputs = (): Inputs => ({
   moduleDirectory: '.',
   testArguments: ['./...'],
   fromJSONFiles: null,
+  cover: false,
   omit: new Set(),
 })
 
@@ -68,6 +70,10 @@ export function getInputs(): Inputs {
       .split('\n')
       .map(f => f.trim())
       .filter(f => f.length > 0)
+  }
+
+  if (core.getInput('cover') && core.getBooleanInput('cover')) {
+    inputs.cover = true
   }
 
   const omit = core.getInput('omit')

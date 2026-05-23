@@ -30,8 +30,17 @@ describe('renderer', () => {
       moduleDirectory: '.',
       testArguments: ['./...'],
       fromJSONFiles: null,
+      cover: false,
       omit: new Set(),
     })
+  })
+
+  it('parses cover', () => {
+    mockInput('cover', 'true')
+    mockGetBooleanInput.mockReturnValueOnce(true)
+    const inputs = getInputs()
+
+    expect(inputs.cover).toBe(true)
   })
 
   it('parses moduleDirectory', () => {
