@@ -17,11 +17,11 @@
     "@actions/glob": "^0.7.0"
   },
   "devDependencies": {
-    "@types/node": "^25.9.0",
+    "@types/node": "^25.9.1",
     "@vercel/ncc": "^0.38.4",
     "cheerio": "^1.2.0",
-    "tsx": "^4.22.2",
+    "tsx": "^4.22.3",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.6"
+    "vitest": "^4.1.7"
   }
 }
