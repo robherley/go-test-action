@@ -11,7 +11,7 @@ jobs:
     name: vitest
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: node version from action.yml
         id: node-version
         run: echo "version=$(grep 'using:' action.yml | sed "s/.*node\([0-9]*\).*/\1/")" >> $GITHUB_OUTPUT
